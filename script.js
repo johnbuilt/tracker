@@ -41,11 +41,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function calculateNutrients(waterAmount) {
+        // Convert water amount from fluid oz to gallons (1 gallon = 128 fluid oz)
+        const waterInGallons = waterAmount / 128;
+        
         // Example nutrient calculation for Fox Farms Trio
         const nutrients = {
-            growBig: waterAmount * 2,  // Example ratio
-            tigerBloom: waterAmount * 1.5,  // Example ratio
-            bigBloom: waterAmount * 4  // Example ratio
+            growBig: waterInGallons * 2,  // Example ratio
+            tigerBloom: waterInGallons * 1.5,  // Example ratio
+            bigBloom: waterInGallons * 4  // Example ratio
         };
         return nutrients;
     }
@@ -57,8 +60,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const li = document.createElement('li');
             li.innerHTML = `
                 <strong>${plant.name}</strong> (Planted on: ${plant.date})<br>
-                Water Amount: ${plant.waterAmount} gallons<br>
-                Nutrients: Grow Big - ${calculateNutrients(plant.waterAmount).growBig} tsp, Tiger Bloom - ${calculateNutrients(plant.waterAmount).tigerBloom} tsp, Big Bloom - ${calculateNutrients(plant.waterAmount).bigBloom} tsp<br>
+                Water Amount: ${plant.waterAmount} fluid oz<br>
+                Nutrients: Grow Big - ${calculateNutrients(plant.waterAmount).growBig.toFixed(2)} tsp, Tiger Bloom - ${calculateNutrients(plant.waterAmount).tigerBloom.toFixed(2)} tsp, Big Bloom - ${calculateNutrients(plant.waterAmount).bigBloom.toFixed(2)} tsp<br>
                 ${plant.photo ? `<img src="${plant.photo}" alt="${plant.name} photo" style="max-width: 200px; max-height: 200px;">` : ''}
             `;
             plantList.appendChild(li);
