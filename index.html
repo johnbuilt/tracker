@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannabis Plant Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Cannabis Plant Manager</h1>
+    <div id="add-plant">
+        <h2>Add New Plant</h2>
+        <form id="plant-form">
+            <label for="plant-name">Plant Name:</label>
+            <input type="text" id="plant-name" required>
+            <label for="plant-date">Planting Date:</label>
+            <input type="date" id="plant-date" required>
+            <button type="submit">Add Plant</button>
+        </form>
+    </div>
+    <div id="plant-list">
+        <h2>My Plants</h2>
+        <ul id="plants"></ul>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
