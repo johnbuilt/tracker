@@ -10,16 +10,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function addPlant() {
         const name = document.getElementById('plant-name').value;
         const date = document.getElementById('plant-date').value;
-        const waterAmount = document.getElementById('water-amount').value;
-        const photo = document.getElementById('plant-photo').files[0];
         
-        if (name && date && waterAmount) {
+        if (name && date) {
             const plant = {
                 id: Date.now(),
                 name: name,
                 date: date,
-                waterAmount: waterAmount,
-                photo: photo ? URL.createObjectURL(photo) : null
+                waterAmount: 0,
+                photo: null
             };
             
             const plants = getPlants();
@@ -53,6 +51,26 @@ document.addEventListener('DOMContentLoaded', function() {
         return nutrients;
     }
     
+    function updatePlantWaterAmount(id, waterAmount) {
+        const plants = getPlants();
+        const plant = plants.find(p => p.id === id);
+        if (plant) {
+            plant.waterAmount = waterAmount;
+            savePlants(plants);
+            renderPlants();
+        }
+    }
+
+    function updatePlantPhoto(id, photo) {
+        const plants = getPlants();
+        const plant = plants.find(p => p.id === id);
+        if (plant) {
+            plant.photo = URL.createObjectURL(photo);
+            savePlants(plants);
+            renderPlants();
+        }
+    }
+    
     function renderPlants() {
         const plants = getPlants();
         plantList.innerHTML = '';
@@ -60,13 +78,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const li = document.createElement('li');
             li.innerHTML = `
                 <strong>${plant.name}</strong> (Planted on: ${plant.date})<br>
-                Water Amount: ${plant.waterAmount} fluid oz<br>
+                Water Amount: <input type="number" value="${plant.waterAmount}" step="0.1" onchange="updatePlantWaterAmount(${plant.id}, this.value)"> fluid oz<br>
                 Nutrients: Grow Big - ${calculateNutrients(plant.waterAmount).growBig.toFixed(2)} tsp, Tiger Bloom - ${calculateNutrients(plant.waterAmount).tigerBloom.toFixed(2)} tsp, Big Bloom - ${calculateNutrients(plant.waterAmount).bigBloom.toFixed(2)} tsp<br>
+                Upload Photo: <input type="file" accept="image/*" onchange="updatePlantPhoto(${plant.id}, this.files[0])"><br>
                 ${plant.photo ? `<img src="${plant.photo}" alt="${plant.name} photo" style="max-width: 200px; max-height: 200px;">` : ''}
             `;
             plantList.appendChild(li);
         });
     }
+    
+    window.updatePlantWaterAmount = updatePlantWaterAmount;
+    window.updatePlantPhoto = updatePlantPhoto;
     
     renderPlants();
 });
