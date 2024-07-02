@@ -80,20 +80,18 @@ function generateNutrientSchedule(startDate, growTime, waterAmount, frequency) {
 function calculateNutrients(week, waterAmount) {
     let bigBloom = 0, growBig = 0, tigerBloom = 0;
 
-    if (week <= 4) {
-        bigBloom = waterAmount * 0.94;
+    if (week >= 1 && week <= 4) {
+        bigBloom = (waterAmount / 128) * 6; // 6 tsp/gallon
         if (week >= 2) {
-            growBig = waterAmount * 0.47;
+            growBig = (waterAmount / 128) * 3; // 3 tsp/gallon
         }
-    } else if (week <= 8) {
-        bigBloom = waterAmount * 0.94;
-        if (week >= 6) {
-            tigerBloom = waterAmount * 0.47;
-        }
-    } else if (week <= 12) {
-        bigBloom = waterAmount * 0.94;
-        tigerBloom = waterAmount * 0.94;
+    } else if (week >= 5 && week <= 8) {
+        bigBloom = (waterAmount / 128) * 3; // 3 tsp/gallon
+        tigerBloom = (waterAmount / 128) * 2; // 2 tsp/gallon
+    } else if (week >= 9 && week <= 12) {
+        bigBloom = (waterAmount / 128) * 3; // 3 tsp/gallon
+        tigerBloom = (waterAmount / 128) * 2; // 2 tsp/gallon
     }
 
-    return { bigBloom, growBig, tigerBloom };
+    return { bigBloom: bigBloom.toFixed(2), growBig: growBig.toFixed(2), tigerBloom: tigerBloom.toFixed(2) };
 }
