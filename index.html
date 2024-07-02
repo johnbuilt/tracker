@@ -5,6 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cannabis Plant Manager</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Firebase JS SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyA_DS_CLnEzucVmi8oMRzodZNgptxU4yRg",
+            authDomain: "plant-tracker-64788.firebaseapp.com",
+            projectId: "plant-tracker-64788",
+            storageBucket: "plant-tracker-64788.appspot.com",
+            messagingSenderId: "824891825207",
+            appId: "1:824891825207:web:ec78778ea6fc463deef3b2",
+            measurementId: "G-X3XBMQFYMC"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
 </head>
 <body>
     <h1>Cannabis Plant Manager</h1>
@@ -16,7 +35,7 @@
         <label for="plant-grow-time">Grow Time (weeks):</label>
         <input type="number" id="plant-grow-time" required>
         <label for="photo-upload">Upload Photo:</label>
-        <input type="file" id="photo-upload" accept="image/*">
+        <input type="file" id="photo-upload">
         <button type="submit">Add Plant</button>
     </form>
     <ul id="plants"></ul>
