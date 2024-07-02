@@ -2,7 +2,7 @@
   "name": "Cannabis Plant Manager",
   "short_name": "Plant Manager",
   "description": "Manage your cannabis plants with ease.",
-  "start_url": "/index.html",
+  "start_url": "/tracker/index.html",  // Ensure this path is correct
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
