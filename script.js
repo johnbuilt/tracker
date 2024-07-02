@@ -1,157 +1,99 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const plantForm = document.getElementById('plant-form');
+document.getElementById('plant-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    const plantName = document.getElementById('plant-name').value;
+    const plantDate = new Date(document.getElementById('plant-date').value);
+    const growTime = parseInt(document.getElementById('plant-grow-time').value, 10);
     const plantList = document.getElementById('plants');
     
-    plantForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        addPlant();
-    });
+    const plantItem = document.createElement('li');
+    plantItem.textContent = `${plantName} (Planted on: ${plantDate.toISOString().split('T')[0]})`;
     
-    function addPlant() {
-        const name = document.getElementById('plant-name').value;
-        const date = document.getElementById('plant-date').value;
-        const growTime = parseInt(document.getElementById('plant-grow-time').value, 10);
-        
-        if (name && date && growTime) {
-            const plant = {
-                id: Date.now(),
-                name: name,
-                date: date,
-                waterAmount: 0,
-                wateringFrequency: 1,
-                growTime: growTime,
-                photo: null
-            };
-            
-            const plants = getPlants();
-            plants.push(plant);
-            savePlants(plants);
-            renderPlants();
-            
-            plantForm.reset();
-        }
-    }
-    
-    function getPlants() {
-        const plants = localStorage.getItem('plants');
-        return plants ? JSON.parse(plants) : [];
-    }
-    
-    function savePlants(plants) {
-        localStorage.setItem('plants', JSON.stringify(plants));
-    }
-    
-    function calculateNutrients(waterAmount, week) {
-        const waterInGallons = waterAmount / 128;
-        
-        const nutrientSchedule = {
-            1: { bigBloom: 3, growBig: 0, tigerBloom: 0 },
-            2: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
-            3: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
-            4: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
-            5: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
-            6: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
-            7: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
-            8: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 },
-            9: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 },
-            10: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 },
-            11: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 },
-            12: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 }
-        };
-        
-        const nutrients = nutrientSchedule[week] || { bigBloom: 0, growBig: 0, tigerBloom: 0 };
-        return {
-            bigBloom: waterInGallons * nutrients.bigBloom,
-            growBig: waterInGallons * nutrients.growBig,
-            tigerBloom: waterInGallons * nutrients.tigerBloom
-        };
-    }
-    
-    function updatePlantWaterAmount(id, waterAmount) {
-        const plants = getPlants();
-        const plant = plants.find(p => p.id === id);
-        if (plant) {
-            plant.waterAmount = parseFloat(waterAmount) || 0;
-            savePlants(plants);
-            renderPlants();
-        }
-    }
+    const waterAmountInput = document.createElement('input');
+    waterAmountInput.type = 'number';
+    waterAmountInput.placeholder = 'Water Amount (fluid oz)';
+    waterAmountInput.addEventListener('input', updateNutrientSchedule);
 
-    function updatePlantWateringFrequency(id, frequency) {
-        const plants = getPlants();
-        const plant = plants.find(p => p.id === id);
-        if (plant) {
-            plant.wateringFrequency = parseInt(frequency, 10) || 1;
-            savePlants(plants);
-            renderPlants();
+    const wateringFrequencySelect = document.createElement('select');
+    for (let i = 1; i <= 7; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = `${i} day${i > 1 ? 's' : ''}`;
+        wateringFrequencySelect.appendChild(option);
+    }
+    wateringFrequencySelect.addEventListener('change', updateNutrientSchedule);
+    
+    const photoUploadInput = document.createElement('input');
+    photoUploadInput.type = 'file';
+    photoUploadInput.accept = 'image/*';
+
+    const nutrientSchedule = document.createElement('div');
+
+    plantItem.appendChild(document.createElement('br'));
+    plantItem.appendChild(document.createTextNode('Water Amount: '));
+    plantItem.appendChild(waterAmountInput);
+    plantItem.appendChild(document.createTextNode(' fluid oz'));
+    plantItem.appendChild(document.createElement('br'));
+    plantItem.appendChild(document.createTextNode('Watering Frequency: '));
+    plantItem.appendChild(wateringFrequencySelect);
+    plantItem.appendChild(document.createElement('br'));
+    plantItem.appendChild(document.createTextNode('Upload Photo: '));
+    plantItem.appendChild(photoUploadInput);
+    plantItem.appendChild(document.createElement('br'));
+    plantItem.appendChild(document.createTextNode('Nutrient Schedule'));
+    plantItem.appendChild(document.createElement('br'));
+    plantItem.appendChild(nutrientSchedule);
+
+    plantList.appendChild(plantItem);
+
+    function updateNutrientSchedule() {
+        const waterAmount = waterAmountInput.value;
+        const wateringFrequency = wateringFrequencySelect.value;
+        if (waterAmount && wateringFrequency) {
+            const schedule = generateNutrientSchedule(plantDate, growTime, waterAmount, wateringFrequency);
+            nutrientSchedule.innerHTML = schedule.map(entry => `
+                <div>${entry.date.toDateString()}: Big Bloom - ${entry.bigBloom} tsp, Grow Big - ${entry.growBig} tsp, Tiger Bloom - ${entry.tigerBloom} tsp</div>
+            `).join('');
         }
     }
+});
 
-    function updatePlantPhoto(id, photo) {
-        const plants = getPlants();
-        const plant = plants.find(p => p.id === id);
-        if (plant) {
-            plant.photo = URL.createObjectURL(photo);
-            savePlants(plants);
-            renderPlants();
-        }
-    }
+function generateNutrientSchedule(startDate, growTime, waterAmount, frequency) {
+    const weeks = growTime;
+    const schedule = [];
+    let currentDate = new Date(startDate);
 
-    function generateNutrientSchedule(plant) {
-        const schedule = [];
-        const frequency = plant.wateringFrequency;
-        let currentDate = new Date(plant.date);
-        const today = new Date();
-        let week = Math.floor((today - new Date(plant.date)) / (7 * 24 * 60 * 60 * 1000)) + 1; // Calculate the week number
-        
-        for (let i = 0; i < plant.growTime * 7; i += frequency) {
-            const nutrients = calculateNutrients(plant.waterAmount, week);
+    for (let week = 1; week <= weeks; week++) {
+        for (let day = 0; day < 7; day++) {
+            const nutrients = calculateNutrients(week, waterAmount);
             schedule.push({
                 date: new Date(currentDate),
-                nutrients: { ...nutrients }
+                ...nutrients
             });
             currentDate.setDate(currentDate.getDate() + frequency);
-            week += 1; // Increment the week
         }
-        return schedule;
     }
     
-    function renderPlants() {
-        const plants = getPlants();
-        plantList.innerHTML = '';
-        plants.forEach(plant => {
-            const li = document.createElement('li');
-            const schedule = generateNutrientSchedule(plant);
-            const scheduleHtml = schedule.map(entry => `
-                <div>
-                    <strong>${entry.date.toDateString()}</strong>: 
-                    Big Bloom - ${entry.nutrients.bigBloom.toFixed(2)} tsp, 
-                    Grow Big - ${entry.nutrients.growBig.toFixed(2)} tsp, 
-                    Tiger Bloom - ${entry.nutrients.tigerBloom.toFixed(2)} tsp
-                </div>
-            `).join('');
+    return schedule;
+}
 
-            li.innerHTML = `
-                <strong>${plant.name}</strong> (Planted on: ${plant.date})<br>
-                Water Amount: <input type="number" value="${plant.waterAmount}" step="0.1" onchange="updatePlantWaterAmount(${plant.id}, this.value)"> fluid oz<br>
-                Watering Frequency: <select onchange="updatePlantWateringFrequency(${plant.id}, this.value)">
-                    ${[...Array(7).keys()].map(i => `<option value="${i + 1}" ${plant.wateringFrequency === (i + 1) ? 'selected' : ''}>${i + 1}</option>`).join('')}
-                </select> days<br>
-                Nutrients: Big Bloom - ${calculateNutrients(plant.waterAmount, 1).bigBloom.toFixed(2)} tsp, 
-                Grow Big - ${calculateNutrients(plant.waterAmount, 1).growBig.toFixed(2)} tsp, 
-                Tiger Bloom - ${calculateNutrients(plant.waterAmount, 1).tigerBloom.toFixed(2)} tsp<br>
-                Upload Photo: <input type="file" accept="image/*" onchange="updatePlantPhoto(${plant.id}, this.files[0])"><br>
-                ${plant.photo ? `<img src="${plant.photo}" alt="${plant.name} photo" style="max-width: 200px; max-height: 200px;">` : ''}
-                <h3>Nutrient Schedule</h3>
-                ${scheduleHtml}
-            `;
-            plantList.appendChild(li);
-        });
+function calculateNutrients(week, waterAmount) {
+    let bigBloom = 0, growBig = 0, tigerBloom = 0;
+
+    if (week <= 4) {
+        bigBloom = waterAmount * 0.94;
+        if (week >= 2) {
+            growBig = waterAmount * 0.47;
+        }
+    } else if (week <= 8) {
+        bigBloom = waterAmount * 0.94;
+        if (week >= 6) {
+            tigerBloom = waterAmount * 0.47;
+        }
+    } else if (week <= 12) {
+        bigBloom = waterAmount * 0.94;
+        tigerBloom = waterAmount * 0.94;
     }
-    
-    window.updatePlantWaterAmount = updatePlantWaterAmount;
-    window.updatePlantWateringFrequency = updatePlantWateringFrequency;
-    window.updatePlantPhoto = updatePlantPhoto;
-    
-    renderPlants();
-});
+
+    return { bigBloom, growBig, tigerBloom };
+}
