@@ -5,48 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cannabis Plant Manager</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4CAF50">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Plant Manager">
-    <link rel="apple-touch-icon" href="icon-192x192.png">
 </head>
 <body>
     <h1>Cannabis Plant Manager</h1>
-    <div id="add-plant">
-        <h2>Add New Plant</h2>
-        <form id="plant-form">
-            <label for="plant-name">Plant Name:</label>
-            <input type="text" id="plant-name" required>
-            <label for="plant-date">Planting Date:</label>
-            <input type="date" id="plant-date" required>
-            <button type="submit">Add Plant</button>
-        </form>
-    </div>
-    <div id="plant-list">
-        <h2>My Plants</h2>
-        <ul id="plants"></ul>
-    </div>
+    <form id="plant-form">
+        <label for="plant-name">Plant Name:</label>
+        <input type="text" id="plant-name" required>
+        <label for="plant-date">Planting Date:</label>
+        <input type="date" id="plant-date" required>
+        <label for="plant-grow-time">Grow Time (weeks):</label>
+        <input type="number" id="plant-grow-time" required>
+        <button type="submit">Add Plant</button>
+    </form>
+    <ul id="plants"></ul>
+
     <script src="script.js"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/tracker/service-worker.js')
-          .then(function(registration) {
-            console.log('Service Worker registered with scope:', registration.scope);
-          }).catch(function(error) {
-            console.log('Service Worker registration failed:', error);
-          });
-      }
-    </script>
 </body>
 </html>
-<form id="plant-form">
-    <label for="plant-name">Plant Name:</label>
-    <input type="text" id="plant-name" required>
-    <label for="plant-date">Planting Date:</label>
-    <input type="date" id="plant-date" required>
-    <label for="plant-grow-time">Grow Time (weeks):</label>
-    <input type="number" id="plant-grow-time" required>
-    <button type="submit">Add Plant</button>
-</form>
