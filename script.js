@@ -64,13 +64,13 @@ function generateNutrientSchedule(startDate, growTime, waterAmount, frequency) {
     let currentDate = new Date(startDate);
 
     for (let week = 1; week <= weeks; week++) {
-        for (let day = 0; day < 7; day++) {
+        for (let day = 0; day < 7; day += parseInt(frequency, 10)) {
             const nutrients = calculateNutrients(week, waterAmount);
             schedule.push({
                 date: new Date(currentDate),
                 ...nutrients
             });
-            currentDate.setDate(currentDate.getDate() + frequency);
+            currentDate.setDate(currentDate.getDate() + parseInt(frequency, 10));
         }
     }
     
