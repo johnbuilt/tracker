@@ -1,12 +1,10 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
-    padding: 20px;
-    background-color: #f4f4f4;
 }
 
-h1, h2 {
-    color: #333;
+h1 {
+    text-align: center;
 }
 
 form {
@@ -18,32 +16,32 @@ label {
     margin-top: 10px;
 }
 
-input {
-    padding: 5px;
+input[type="text"],
+input[type="date"],
+input[type="number"],
+input[type="file"],
+select,
+button {
+    display: block;
     margin-top: 5px;
 }
 
 button {
-    padding: 10px 20px;
-    margin-top: 10px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
+    margin-top: 20px;
 }
 
-button:hover {
-    background-color: #45a049;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
 }
 
-#plant-list ul {
-    list-style: none;
-    padding: 0;
-}
-
-#plant-list li {
-    background-color: #fff;
-    margin: 10px 0;
-    padding: 10px;
+th, td {
     border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f4f4f4;
 }
