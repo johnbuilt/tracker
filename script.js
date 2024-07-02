@@ -1,15 +1,42 @@
+document.addEventListener('DOMContentLoaded', loadPlants);
+
 document.getElementById('plant-form').addEventListener('submit', function(event) {
     event.preventDefault();
     
     const plantName = document.getElementById('plant-name').value;
     const plantDate = new Date(document.getElementById('plant-date').value);
     const growTime = parseInt(document.getElementById('plant-grow-time').value, 10);
+    
+    const plant = {
+        name: plantName,
+        date: plantDate.toISOString().split('T')[0],
+        growTime: growTime
+    };
+    
+    savePlant(plant);
+    addPlantToDOM(plant);
+    
+    document.getElementById('plant-form').reset();
+});
+
+function savePlant(plant) {
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    plants.push(plant);
+    localStorage.setItem('plants', JSON.stringify(plants));
+}
+
+function loadPlants() {
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    plants.forEach(addPlantToDOM);
+}
+
+function addPlantToDOM(plant) {
     const plantList = document.getElementById('plants');
     
     const plantItem = document.createElement('li');
     plantItem.classList.add('plant-item');
     plantItem.innerHTML = `
-        <strong>${plantName}</strong> (Planted on: ${plantDate.toISOString().split('T')[0]})<br>
+        <strong>${plant.name}</strong> (Planted on: ${plant.date})<br>
         <label>Water Amount: <input type="number" placeholder="Water Amount (fluid oz)" class="water-amount"></label><br>
         <label>Watering Frequency: <select class="watering-frequency">
             ${Array.from({length: 7}, (_, i) => `<option value="${i+1}">${i+1} day${i > 0 ? 's' : ''}</option>`).join('')}
@@ -30,11 +57,11 @@ document.getElementById('plant-form').addEventListener('submit', function(event)
         const wateringFrequency = wateringFrequencySelect.value;
 
         if (waterAmount && wateringFrequency) {
-            const schedule = generateNutrientSchedule(plantDate, growTime, waterAmount, wateringFrequency);
+            const schedule = generateNutrientSchedule(new Date(plant.date), plant.growTime, waterAmount, wateringFrequency);
             nutrientSchedule.innerHTML = generateScheduleTable(schedule);
         }
     }
-});
+}
 
 function generateNutrientSchedule(startDate, growTime, waterAmount, frequency) {
     const weeks = growTime;
