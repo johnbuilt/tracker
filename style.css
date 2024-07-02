@@ -45,3 +45,7 @@ th, td {
 th {
     background-color: #f4f4f4;
 }
+
+th input {
+    width: 50px;
+}
