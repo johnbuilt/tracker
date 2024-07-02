@@ -23,10 +23,6 @@ document.getElementById('plant-form').addEventListener('submit', function(event)
     }
     wateringFrequencySelect.addEventListener('change', updateNutrientSchedule);
     
-    const photoUploadInput = document.createElement('input');
-    photoUploadInput.type = 'file';
-    photoUploadInput.accept = 'image/*';
-
     const bigBloomModifierInput = document.createElement('input');
     bigBloomModifierInput.type = 'number';
     bigBloomModifierInput.value = 100;
@@ -67,9 +63,6 @@ document.getElementById('plant-form').addEventListener('submit', function(event)
     plantItem.appendChild(tigerBloomModifierInput);
     plantItem.appendChild(document.createTextNode('%'));
     plantItem.appendChild(document.createElement('br'));
-    plantItem.appendChild(document.createTextNode('Upload Photo: '));
-    plantItem.appendChild(photoUploadInput);
-    plantItem.appendChild(document.createElement('br'));
     plantItem.appendChild(document.createTextNode('Nutrient Schedule'));
     plantItem.appendChild(document.createElement('br'));
     plantItem.appendChild(nutrientSchedule);
@@ -85,9 +78,7 @@ document.getElementById('plant-form').addEventListener('submit', function(event)
 
         if (waterAmount && wateringFrequency) {
             const schedule = generateNutrientSchedule(plantDate, growTime, waterAmount, wateringFrequency, bigBloomModifier, growBigModifier, tigerBloomModifier);
-            nutrientSchedule.innerHTML = schedule.map(entry => `
-                <div>${entry.date.toDateString()}: Big Bloom - ${entry.bigBloom} tsp, Grow Big - ${entry.growBig} tsp, Tiger Bloom - ${entry.tigerBloom} tsp</div>
-            `).join('');
+            nutrientSchedule.innerHTML = generateScheduleTable(schedule);
         }
     }
 });
@@ -128,4 +119,24 @@ function calculateNutrients(week, waterAmount, bigBloomModifier, growBigModifier
     }
 
     return { bigBloom: bigBloom.toFixed(2), growBig: growBig.toFixed(2), tigerBloom: tigerBloom.toFixed(2) };
+}
+
+function generateScheduleTable(schedule) {
+    let table = `<table>
+                    <tr>
+                        <th>Date</th>
+                        <th>Grow Big</th>
+                        <th>Big Bloom</th>
+                        <th>Tiger Bloom</th>
+                    </tr>`;
+    schedule.forEach(entry => {
+        table += `<tr>
+                    <td>${entry.date.toDateString()}</td>
+                    <td>${entry.growBig} tsp</td>
+                    <td>${entry.bigBloom} tsp</td>
+                    <td>${entry.tigerBloom} tsp</td>
+                  </tr>`;
+    });
+    table += `</table>`;
+    return table;
 }
