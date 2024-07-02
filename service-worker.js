@@ -2,13 +2,13 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open('v1').then(function(cache) {
       return cache.addAll([
-        '/',
-        '/index.html',
-        '/style.css',
-        '/script.js',
-        '/manifest.json',
-        '/icon-192x192.png',
-        '/icon-512x512.png'
+        '/tracker/',
+        '/tracker/index.html',
+        '/tracker/style.css',
+        '/tracker/script.js',
+        '/tracker/manifest.json',
+        '/tracker/icon-192x192.png',
+        '/tracker/icon-512x512.png'
       ]);
     })
   );
