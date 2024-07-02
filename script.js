@@ -71,17 +71,27 @@ function addPlantToDOM(plant) {
     const plantItem = document.createElement('li');
     plantItem.classList.add('plant-item');
     plantItem.innerHTML = `
-        <strong>${plant.name}</strong> (Planted on: ${plant.date})<br>
-        <label>Water Amount: <input type="number" class="water-amount" value="${plant.waterAmount}"></label><br>
-        <label>Watering Frequency: <select class="watering-frequency">
-            ${Array.from({length: 7}, (_, i) => `<option value="${i+1}" ${plant.wateringFrequency == i+1 ? 'selected' : ''}>${i+1} day${i > 0 ? 's' : ''}</option>`).join('')}
-        </select></label><br>
-        <label>Big Bloom Modifier: <input type="number" class="big-bloom-modifier" value="${plant.nutrientModifiers.bigBloom}"></label><br>
-        <label>Grow Big Modifier: <input type="number" class="grow-big-modifier" value="${plant.nutrientModifiers.growBig}"></label><br>
-        <label>Tiger Bloom Modifier: <input type="number" class="tiger-bloom-modifier" value="${plant.nutrientModifiers.tigerBloom}"></label><br>
-        <div class="nutrient-schedule"></div>
+        <button class="collapsible">${plant.name} (Planted on: ${plant.date})</button>
+        <div class="content">
+            <label>Water Amount: <input type="number" class="water-amount" value="${plant.waterAmount}"></label><br>
+            <label>Watering Frequency: <select class="watering-frequency">
+                ${Array.from({length: 7}, (_, i) => `<option value="${i+1}" ${plant.wateringFrequency == i+1 ? 'selected' : ''}>${i+1} day${i > 0 ? 's' : ''}</option>`).join('')}
+            </select></label><br>
+            <label>Big Bloom Modifier: <input type="number" class="big-bloom-modifier" value="${plant.nutrientModifiers.bigBloom}"></label><br>
+            <label>Grow Big Modifier: <input type="number" class="grow-big-modifier" value="${plant.nutrientModifiers.growBig}"></label><br>
+            <label>Tiger Bloom Modifier: <input type="number" class="tiger-bloom-modifier" value="${plant.nutrientModifiers.tigerBloom}"></label><br>
+            <div class="nutrient-schedule"></div>
+        </div>
     `;
     plantList.appendChild(plantItem);
+
+    const collapsible = plantItem.querySelector('.collapsible');
+    const content = plantItem.querySelector('.content');
+    
+    collapsible.addEventListener('click', function() {
+        this.classList.toggle('active');
+        content.style.display = content.style.display === 'block' ? 'none' : 'block';
+    });
     
     const waterAmountInput = plantItem.querySelector('.water-amount');
     const wateringFrequencySelect = plantItem.querySelector('.watering-frequency');
