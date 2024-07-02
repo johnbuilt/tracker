@@ -27,7 +27,7 @@ document.getElementById('plant-form').addEventListener('submit', function(event)
 });
 
 document.getElementById('save-to-file').addEventListener('click', savePlantsToFile);
-document.getElementById('load-from-file').addEventListener('change', loadPlantsFromFile);
+document.getElementById('import-plants').addEventListener('click', importPlantsFromFile);
 
 function savePlantToStorage(plant) {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
@@ -52,8 +52,9 @@ function savePlantsToFile() {
     document.body.removeChild(a);
 }
 
-function loadPlantsFromFile(event) {
-    const file = event.target.files[0];
+function importPlantsFromFile() {
+    const fileInput = document.getElementById('load-from-file');
+    const file = fileInput.files[0];
     const reader = new FileReader();
     reader.onload = function(e) {
         const plants = JSON.parse(e.target.result);
@@ -157,24 +158,3 @@ function generateScheduleTable(schedule) {
                         <th>Date</th>
                         <th>Grow Big</th>
                         <th>Big Bloom</th>
-                        <th>Tiger Bloom</th>
-                    </tr>`;
-    schedule.forEach(entry => {
-        table += `<tr>
-                    <td>${entry.date.toDateString()}</td>
-                    <td class="growBig" data-base="${entry.growBig}">${entry.growBig} tsp</td>
-                    <td class="bigBloom" data-base="${entry.bigBloom}">${entry.bigBloom} tsp</td>
-                    <td class="tigerBloom" data-base="${entry.tigerBloom}">${entry.tigerBloom} tsp</td>
-                  </tr>`;
-    });
-    table += `</table>`;
-    return table;
-}
-
-function updateModifier(input, nutrient) {
-    const modifier = parseFloat(input.value) / 100;
-    document.querySelectorAll(`.${nutrient}`).forEach(cell => {
-        const baseValue = parseFloat(cell.dataset.base);
-        cell.textContent = (baseValue * modifier).toFixed(2) + ' tsp';
-    });
-}
