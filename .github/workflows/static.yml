@@ -23,10 +23,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
-        with:
-          build: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
