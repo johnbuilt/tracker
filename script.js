@@ -10,14 +10,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function addPlant() {
         const name = document.getElementById('plant-name').value;
         const date = document.getElementById('plant-date').value;
+        const growTime = parseInt(document.getElementById('plant-grow-time').value, 10);
         
-        if (name && date) {
+        if (name && date && growTime) {
             const plant = {
                 id: Date.now(),
                 name: name,
                 date: date,
                 waterAmount: 0,
                 wateringFrequency: 1,
+                growTime: growTime,
                 photo: null
             };
             
@@ -43,18 +45,18 @@ document.addEventListener('DOMContentLoaded', function() {
         const waterInGallons = waterAmount / 128;
         
         const nutrientSchedule = {
-            1: { bigBloom: 6, growBig: 0, tigerBloom: 0 },
-            2: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
-            3: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
-            4: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
-            5: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
-            6: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
-            7: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
-            8: { bigBloom: 6, growBig: 0, tigerBloom: 3 },
-            9: { bigBloom: 6, growBig: 0, tigerBloom: 3 },
-            10: { bigBloom: 6, growBig: 0, tigerBloom: 3 },
-            11: { bigBloom: 6, growBig: 0, tigerBloom: 3 },
-            12: { bigBloom: 6, growBig: 0, tigerBloom: 3 }
+            1: { bigBloom: 3, growBig: 0, tigerBloom: 0 },
+            2: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
+            3: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
+            4: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
+            5: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
+            6: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
+            7: { bigBloom: 3, growBig: 0.25, tigerBloom: 0 },
+            8: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 },
+            9: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 },
+            10: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 },
+            11: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 },
+            12: { bigBloom: 3, growBig: 0, tigerBloom: 0.25 }
         };
         
         const nutrients = nutrientSchedule[week] || { bigBloom: 0, growBig: 0, tigerBloom: 0 };
@@ -102,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const today = new Date();
         let week = Math.floor((today - new Date(plant.date)) / (7 * 24 * 60 * 60 * 1000)) + 1; // Calculate the week number
         
-        for (let i = 0; i < 30; i += frequency) {
+        for (let i = 0; i < plant.growTime * 7; i += frequency) {
             const nutrients = calculateNutrients(plant.waterAmount, week);
             schedule.push({
                 date: new Date(currentDate),
