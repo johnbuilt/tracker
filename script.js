@@ -39,15 +39,30 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('plants', JSON.stringify(plants));
     }
     
-    function calculateNutrients(waterAmount) {
+    function calculateNutrients(waterAmount, week) {
         const waterInGallons = waterAmount / 128;
         
-        const nutrients = {
-            growBig: waterInGallons * 2,
-            tigerBloom: waterInGallons * 1.5,
-            bigBloom: waterInGallons * 4
+        const nutrientSchedule = {
+            1: { bigBloom: 6, growBig: 0, tigerBloom: 0 },
+            2: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
+            3: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
+            4: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
+            5: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
+            6: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
+            7: { bigBloom: 6, growBig: 3, tigerBloom: 0 },
+            8: { bigBloom: 6, growBig: 0, tigerBloom: 3 },
+            9: { bigBloom: 6, growBig: 0, tigerBloom: 3 },
+            10: { bigBloom: 6, growBig: 0, tigerBloom: 3 },
+            11: { bigBloom: 6, growBig: 0, tigerBloom: 3 },
+            12: { bigBloom: 6, growBig: 0, tigerBloom: 3 }
         };
-        return nutrients;
+        
+        const nutrients = nutrientSchedule[week] || { bigBloom: 0, growBig: 0, tigerBloom: 0 };
+        return {
+            bigBloom: waterInGallons * nutrients.bigBloom,
+            growBig: waterInGallons * nutrients.growBig,
+            tigerBloom: waterInGallons * nutrients.tigerBloom
+        };
     }
     
     function updatePlantWaterAmount(id, waterAmount) {
@@ -82,15 +97,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function generateNutrientSchedule(plant) {
         const schedule = [];
-        const nutrients = calculateNutrients(plant.waterAmount);
         const frequency = plant.wateringFrequency;
         let currentDate = new Date(plant.date);
+        const today = new Date();
+        let week = Math.floor((today - new Date(plant.date)) / (7 * 24 * 60 * 60 * 1000)) + 1; // Calculate the week number
+        
         for (let i = 0; i < 30; i += frequency) {
+            const nutrients = calculateNutrients(plant.waterAmount, week);
             schedule.push({
                 date: new Date(currentDate),
                 nutrients: { ...nutrients }
             });
             currentDate.setDate(currentDate.getDate() + frequency);
+            week += 1; // Increment the week
         }
         return schedule;
     }
@@ -104,9 +123,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const scheduleHtml = schedule.map(entry => `
                 <div>
                     <strong>${entry.date.toDateString()}</strong>: 
+                    Big Bloom - ${entry.nutrients.bigBloom.toFixed(2)} tsp, 
                     Grow Big - ${entry.nutrients.growBig.toFixed(2)} tsp, 
-                    Tiger Bloom - ${entry.nutrients.tigerBloom.toFixed(2)} tsp, 
-                    Big Bloom - ${entry.nutrients.bigBloom.toFixed(2)} tsp
+                    Tiger Bloom - ${entry.nutrients.tigerBloom.toFixed(2)} tsp
                 </div>
             `).join('');
 
@@ -116,9 +135,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 Watering Frequency: <select onchange="updatePlantWateringFrequency(${plant.id}, this.value)">
                     ${[...Array(7).keys()].map(i => `<option value="${i + 1}" ${plant.wateringFrequency === (i + 1) ? 'selected' : ''}>${i + 1}</option>`).join('')}
                 </select> days<br>
-                Nutrients: Grow Big - ${calculateNutrients(plant.waterAmount).growBig.toFixed(2)} tsp, 
-                Tiger Bloom - ${calculateNutrients(plant.waterAmount).tigerBloom.toFixed(2)} tsp, 
-                Big Bloom - ${calculateNutrients(plant.waterAmount).bigBloom.toFixed(2)} tsp<br>
+                Nutrients: Big Bloom - ${calculateNutrients(plant.waterAmount, 1).bigBloom.toFixed(2)} tsp, 
+                Grow Big - ${calculateNutrients(plant.waterAmount, 1).growBig.toFixed(2)} tsp, 
+                Tiger Bloom - ${calculateNutrients(plant.waterAmount, 1).tigerBloom.toFixed(2)} tsp<br>
                 Upload Photo: <input type="file" accept="image/*" onchange="updatePlantPhoto(${plant.id}, this.files[0])"><br>
                 ${plant.photo ? `<img src="${plant.photo}" alt="${plant.name} photo" style="max-width: 200px; max-height: 200px;">` : ''}
                 <h3>Nutrient Schedule</h3>
