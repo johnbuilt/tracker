@@ -10,7 +10,14 @@ document.getElementById('plant-form').addEventListener('submit', function(event)
     const plant = {
         name: plantName,
         date: plantDate.toISOString().split('T')[0],
-        growTime: growTime
+        growTime: growTime,
+        waterAmount: 20,
+        wateringFrequency: 1,
+        nutrientModifiers: {
+            bigBloom: 100,
+            growBig: 100,
+            tigerBloom: 100
+        }
     };
     
     savePlantToStorage(plant);
@@ -64,40 +71,56 @@ function addPlantToDOM(plant) {
     plantItem.classList.add('plant-item');
     plantItem.innerHTML = `
         <strong>${plant.name}</strong> (Planted on: ${plant.date})<br>
-        <label>Water Amount: <input type="number" placeholder="Water Amount (fluid oz)" class="water-amount"></label><br>
+        <label>Water Amount: <input type="number" class="water-amount" value="${plant.waterAmount}"></label><br>
         <label>Watering Frequency: <select class="watering-frequency">
-            ${Array.from({length: 7}, (_, i) => `<option value="${i+1}">${i+1} day${i > 0 ? 's' : ''}</option>`).join('')}
+            ${Array.from({length: 7}, (_, i) => `<option value="${i+1}" ${plant.wateringFrequency == i+1 ? 'selected' : ''}>${i+1} day${i > 0 ? 's' : ''}</option>`).join('')}
         </select></label><br>
+        <label>Big Bloom Modifier: <input type="number" class="big-bloom-modifier" value="${plant.nutrientModifiers.bigBloom}"></label><br>
+        <label>Grow Big Modifier: <input type="number" class="grow-big-modifier" value="${plant.nutrientModifiers.growBig}"></label><br>
+        <label>Tiger Bloom Modifier: <input type="number" class="tiger-bloom-modifier" value="${plant.nutrientModifiers.tigerBloom}"></label><br>
         <div class="nutrient-schedule"></div>
     `;
     plantList.appendChild(plantItem);
     
     const waterAmountInput = plantItem.querySelector('.water-amount');
     const wateringFrequencySelect = plantItem.querySelector('.watering-frequency');
+    const bigBloomModifierInput = plantItem.querySelector('.big-bloom-modifier');
+    const growBigModifierInput = plantItem.querySelector('.grow-big-modifier');
+    const tigerBloomModifierInput = plantItem.querySelector('.tiger-bloom-modifier');
     const nutrientSchedule = plantItem.querySelector('.nutrient-schedule');
-
-    waterAmountInput.addEventListener('input', updateNutrientSchedule);
-    wateringFrequencySelect.addEventListener('change', updateNutrientSchedule);
 
     function updateNutrientSchedule() {
         const waterAmount = waterAmountInput.value;
         const wateringFrequency = wateringFrequencySelect.value;
+        const nutrientModifiers = {
+            bigBloom: bigBloomModifierInput.value,
+            growBig: growBigModifierInput.value,
+            tigerBloom: tigerBloomModifierInput.value
+        };
 
         if (waterAmount && wateringFrequency) {
-            const schedule = generateNutrientSchedule(new Date(plant.date), plant.growTime, waterAmount, wateringFrequency);
+            const schedule = generateNutrientSchedule(new Date(plant.date), plant.growTime, waterAmount, wateringFrequency, nutrientModifiers);
             nutrientSchedule.innerHTML = generateScheduleTable(schedule);
         }
     }
+
+    waterAmountInput.addEventListener('input', updateNutrientSchedule);
+    wateringFrequencySelect.addEventListener('change', updateNutrientSchedule);
+    bigBloomModifierInput.addEventListener('input', updateNutrientSchedule);
+    growBigModifierInput.addEventListener('input', updateNutrientSchedule);
+    tigerBloomModifierInput.addEventListener('input', updateNutrientSchedule);
+
+    updateNutrientSchedule();
 }
 
-function generateNutrientSchedule(startDate, growTime, waterAmount, frequency) {
+function generateNutrientSchedule(startDate, growTime, waterAmount, frequency, nutrientModifiers) {
     const weeks = growTime;
     const schedule = [];
     let currentDate = new Date(startDate);
 
     for (let week = 1; week <= weeks; week++) {
         for (let day = 0; day < 7; day += parseInt(frequency, 10)) {
-            const nutrients = calculateNutrients(week, waterAmount);
+            const nutrients = calculateNutrients(week, waterAmount, nutrientModifiers);
             schedule.push({
                 date: new Date(currentDate),
                 ...nutrients
@@ -109,20 +132,20 @@ function generateNutrientSchedule(startDate, growTime, waterAmount, frequency) {
     return schedule;
 }
 
-function calculateNutrients(week, waterAmount) {
+function calculateNutrients(week, waterAmount, nutrientModifiers) {
     let bigBloom = 0, growBig = 0, tigerBloom = 0;
 
     if (week >= 1 && week <= 4) {
-        bigBloom = (waterAmount / 128) * 6; // 6 tsp/gallon
+        bigBloom = (waterAmount / 128) * 6 * (nutrientModifiers.bigBloom / 100); // 6 tsp/gallon
         if (week >= 2) {
-            growBig = (waterAmount / 128) * 3; // 3 tsp/gallon
+            growBig = (waterAmount / 128) * 3 * (nutrientModifiers.growBig / 100); // 3 tsp/gallon
         }
     } else if (week >= 5 && week <= 8) {
-        bigBloom = (waterAmount / 128) * 3; // 3 tsp/gallon
-        tigerBloom = (waterAmount / 128) * 2; // 2 tsp/gallon
+        bigBloom = (waterAmount / 128) * 3 * (nutrientModifiers.bigBloom / 100); // 3 tsp/gallon
+        tigerBloom = (waterAmount / 128) * 2 * (nutrientModifiers.tigerBloom / 100); // 2 tsp/gallon
     } else if (week >= 9 && week <= 12) {
-        bigBloom = (waterAmount / 128) * 3; // 3 tsp/gallon
-        tigerBloom = (waterAmount / 128) * 2; // 2 tsp/gallon
+        bigBloom = (waterAmount / 128) * 3 * (nutrientModifiers.bigBloom / 100); // 3 tsp/gallon
+        tigerBloom = (waterAmount / 128) * 2 * (nutrientModifiers.tigerBloom / 100); // 2 tsp/gallon
     }
 
     return { bigBloom: bigBloom.toFixed(2), growBig: growBig.toFixed(2), tigerBloom: tigerBloom.toFixed(2) };
@@ -131,10 +154,10 @@ function calculateNutrients(week, waterAmount) {
 function generateScheduleTable(schedule) {
     let table = `<table>
                     <tr>
-                        <th>Date<br><input type="number" id="watering-frequency-modifier" value="2" onchange="updateModifier(this, 'wateringFrequency')">%<br></th>
-                        <th>Grow Big<br><input type="number" id="grow-big-modifier" value="100" onchange="updateModifier(this, 'growBig')">%<br></th>
-                        <th>Big Bloom<br><input type="number" id="big-bloom-modifier" value="100" onchange="updateModifier(this, 'bigBloom')">%<br></th>
-                        <th>Tiger Bloom<br><input type="number" id="tiger-bloom-modifier" value="100" onchange="updateModifier(this, 'tigerBloom')">%<br></th>
+                        <th>Date</th>
+                        <th>Grow Big</th>
+                        <th>Big Bloom</th>
+                        <th>Tiger Bloom</th>
                     </tr>`;
     schedule.forEach(entry => {
         table += `<tr>
