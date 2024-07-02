@@ -158,3 +158,16 @@ function generateScheduleTable(schedule) {
                         <th>Date</th>
                         <th>Grow Big</th>
                         <th>Big Bloom</th>
+                        <th>Tiger Bloom</th>
+                    </tr>`;
+    schedule.forEach(entry => {
+        table += `<tr>
+                    <td>${entry.date.toDateString()}</td>
+                    <td>${entry.growBig} tsp</td>
+                    <td>${entry.bigBloom} tsp</td>
+                    <td>${entry.tigerBloom} tsp</td>
+                  </tr>`;
+    });
+    table += `</table>`;
+    return table;
+}
