@@ -20,14 +20,21 @@ document.getElementById('plant-form').addEventListener('submit', function(event)
 });
 
 function savePlant(plant) {
-    const plants = JSON.parse(localStorage.getItem('plants')) || [];
-    plants.push(plant);
-    localStorage.setItem('plants', JSON.stringify(plants));
+    db.collection("plants").add(plant)
+    .then((docRef) => {
+        console.log("Document written with ID: ", docRef.id);
+    })
+    .catch((error) => {
+        console.error("Error adding document: ", error);
+    });
 }
 
 function loadPlants() {
-    const plants = JSON.parse(localStorage.getItem('plants')) || [];
-    plants.forEach(addPlantToDOM);
+    db.collection("plants").get().then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            addPlantToDOM(doc.data());
+        });
+    });
 }
 
 function addPlantToDOM(plant) {
