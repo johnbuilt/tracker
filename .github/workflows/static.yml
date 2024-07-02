@@ -28,6 +28,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Debug Node.js Version
+        run: node -v
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
         with:
@@ -37,6 +40,9 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           path: '.'
+
+      - name: Debug Environment Variables
+        run: printenv
 
       - name: Deploy to GitHub Pages
         id: deployment
