@@ -28,22 +28,14 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Debug Node.js Version
-        run: node -v
-
       - name: Setup Pages
-        uses: actions/configure-pages@v3
-        with:
-          enablement: true
+        uses: actions/configure-pages@v1
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v1
         with:
-          path: '.'
-
-      - name: Debug Environment Variables
-        run: printenv
+          path: .
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v1
