@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', loadPlants);
+document.addEventListener('DOMContentLoaded', loadPlantsFromStorage);
 
 document.getElementById('plant-form').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -13,21 +13,48 @@ document.getElementById('plant-form').addEventListener('submit', function(event)
         growTime: growTime
     };
     
-    savePlant(plant);
+    savePlantToStorage(plant);
     addPlantToDOM(plant);
     
     document.getElementById('plant-form').reset();
 });
 
-function savePlant(plant) {
+document.getElementById('save-to-file').addEventListener('click', savePlantsToFile);
+document.getElementById('load-from-file').addEventListener('change', loadPlantsFromFile);
+
+function savePlantToStorage(plant) {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     plants.push(plant);
     localStorage.setItem('plants', JSON.stringify(plants));
 }
 
-function loadPlants() {
+function loadPlantsFromStorage() {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     plants.forEach(addPlantToDOM);
+}
+
+function savePlantsToFile() {
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    const blob = new Blob([JSON.stringify(plants, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'plants.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+function loadPlantsFromFile(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const plants = JSON.parse(e.target.result);
+        localStorage.setItem('plants', JSON.stringify(plants));
+        document.getElementById('plants').innerHTML = '';
+        plants.forEach(addPlantToDOM);
+    };
+    reader.readAsText(file);
 }
 
 function addPlantToDOM(plant) {
