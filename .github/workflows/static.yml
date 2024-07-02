@@ -33,6 +33,11 @@ jobs:
         with:
           enablement: true
 
+      - name: Debug Environment Variables
+        run: |
+          echo "Environment Variables:"
+          printenv
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
