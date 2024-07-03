@@ -103,32 +103,36 @@ function editPlant(index) {
         });
     }
 
-    const editForm = `
-        <div id="edit-plant-form" class="modal">
-            <label for="edit-plant-name">Plant Name:</label>
-            <input type="text" id="edit-plant-name" value="${plant.name}" required>
-            <label for="edit-plant-date">Planting Date:</label>
-            <input type="date" id="edit-plant-date" value="${plant.date}" required>
-            <label for="edit-plant-grow-time">Grow Time (weeks):</label>
-            <input type="number" id="edit-plant-grow-time" value="${plant.growTime}" required>
-            <label for="edit-water-amount">Water Amount (fluid oz):</label>
-            <input type="number" id="edit-water-amount" value="${plant.waterAmount}" required>
-            <label for="edit-watering-frequency">Watering Frequency (days):</label>
-            <input type="number" id="edit-watering-frequency" value="${plant.wateringFrequency}" required>
-            <label for="edit-nutrient-brand">Nutrients:</label>
-            <select id="edit-nutrient-brand" required onchange="updateNutrientOptionsEdit('${index}')">
-                ${Object.keys(nutrientOptions).map(brand => `
-                    <option value="${brand}" ${brand === plant.nutrientBrand ? 'selected' : ''}>${brand}</option>
-                `).join('')}
-            </select>
-            <div id="nutrient-options-edit">${nutrientOptionsHTML}</div>
-            <button onclick="savePlant(${index})">Save</button>
-            <button onclick="closeEditForm()">Cancel</button>
-        </div>
+    const editForm = document.createElement('div');
+    editForm.id = 'edit-plant-form';
+    editForm.className = 'modal';
+    editForm.innerHTML = `
+        <label for="edit-plant-name">Plant Name:</label>
+        <input type="text" id="edit-plant-name" value="${plant.name}" required>
+        <label for="edit-plant-date">Planting Date:</label>
+        <input type="date" id="edit-plant-date" value="${plant.date}" required>
+        <label for="edit-plant-grow-time">Grow Time (weeks):</label>
+        <input type="number" id="edit-plant-grow-time" value="${plant.growTime}" required>
+        <label for="edit-water-amount">Water Amount (fluid oz):</label>
+        <input type="number" id="edit-water-amount" value="${plant.waterAmount}" required>
+        <label for="edit-watering-frequency">Watering Frequency (days):</label>
+        <input type="number" id="edit-watering-frequency" value="${plant.wateringFrequency}" required>
+        <label for="edit-nutrient-brand">Nutrients:</label>
+        <select id="edit-nutrient-brand" required onchange="updateNutrientOptionsEdit('${index}')">
+            ${Object.keys(nutrientOptions).map(brand => `
+                <option value="${brand}" ${brand === plant.nutrientBrand ? 'selected' : ''}>${brand}</option>
+            `).join('')}
+        </select>
+        <div id="nutrient-options-edit">${nutrientOptionsHTML}</div>
+        <button id="save-button">Save</button>
+        <button onclick="closeEditForm()">Cancel</button>
     `;
 
-    const plantList = document.getElementById('plants');
-    plantList.innerHTML += editForm;
+    document.body.appendChild(editForm);
+
+    document.getElementById('save-button').addEventListener('click', function () {
+        savePlant(index);
+    });
 }
 
 function updateNutrientOptionsEdit(index) {
@@ -176,6 +180,13 @@ function savePlant(index) {
     localStorage.setItem('plants', JSON.stringify(plants));
     closeEditForm();
     renderPlants();
+}
+
+function closeEditForm() {
+    const editForm = document.getElementById('edit-plant-form');
+    if (editForm) {
+        editForm.remove();
+    }
 }
 
 document.getElementById('import-plants-button').addEventListener('click', function () {
