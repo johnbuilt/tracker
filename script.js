@@ -99,6 +99,11 @@ function editPlant(index) {
         <button onclick="closeEditForm()">Cancel</button>
     `;
 
+    const overlay = document.createElement('div');
+    overlay.className = 'overlay';
+    overlay.onclick = closeEditForm;
+
+    document.body.appendChild(overlay);
     document.body.appendChild(editForm);
 }
 
@@ -124,7 +129,11 @@ function savePlant(index) {
 
 function closeEditForm() {
     const editForm = document.getElementById('edit-plant-form');
+    const overlay = document.querySelector('.overlay');
     if (editForm) {
         editForm.remove();
+    }
+    if (overlay) {
+        overlay.remove();
     }
 }
