@@ -21,23 +21,13 @@
             <input type="number" id="water-amount" required>
             <label for="watering-frequency">Watering Frequency (days):</label>
             <input type="number" id="watering-frequency" required>
-            <label for="plant-nutrient-brand">Nutrients:</label>
-            <select id="plant-nutrient-brand" required onchange="updateNutrientOptions()">
-                <option value="Fox Farms Trio">Fox Farms Trio</option>
-                <option value="General Hydroponics">General Hydroponics</option>
-                <option value="Advanced Nutrients">Advanced Nutrients</option>
-                <option value="Botanicare">Botanicare</option>
-                <option value="Dyna-Gro">Dyna-Gro</option>
-                <option value="Roots Organics">Roots Organics</option>
-            </select>
-            <div id="nutrient-options"></div>
             <button type="submit">Add Plant</button>
         </form>
     </div>
 
     <div id="my-plants" class="content-section" style="display:none;">
         <button id="import-plants-button">Import Plants</button>
-        <button id="save-plants-button" onclick="savePlantsToFile()">Save Plants to File</button>
+        <button id="save-plants-button">Save Plants to File</button>
         <div id="plants"></div>
     </div>
 
