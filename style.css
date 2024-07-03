@@ -110,27 +110,59 @@ th input {
 }
 
 #edit-plant-form {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin-top: 20px;
     padding: 20px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    z-index: 1001;
-    width: 90%; /* Adjust as needed */
-    max-width: 400px; /* Adjust as needed */
-    max-height: 80%; /* Ensure the form doesn't go off-screen */
-    overflow-y: auto; /* Enable scrolling if the content is too long */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
 }
 
-.overlay {
+#edit-plant-form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#edit-plant-form input[type="text"],
+#edit-plant-form input[type="date"],
+#edit-plant-form input[type="number"],
+#edit-plant-form button,
+#edit-plant-form select {
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+#edit-plant-form button {
+    margin-top: 20px;
+    background-color: #2c3e50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+#edit-plant-form button:hover {
+    background-color: #34495e;
+}
+
+.modal {
+    background: rgba(0, 0, 0, 0.8);
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
     z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
