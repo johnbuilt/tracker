@@ -1,212 +1,134 @@
 document.addEventListener('DOMContentLoaded', function () {
-    let plants = [];
-    const plantForm = document.getElementById('plant-form');
-    const plantsList = document.getElementById('plants');
-    const importButton = document.getElementById('import');
-    const saveButton = document.getElementById('save');
-    const confirmDialog = document.getElementById('confirmDialog');
-    const confirmOverwriteButton = document.getElementById('confirmOverwrite');
-    const confirmAddButton = document.getElementById('confirmAdd');
-    const confirmCancelButton = document.getElementById('confirmCancel');
-    const importFileInput = document.createElement('input');
-    importFileInput.type = 'file';
-    importFileInput.accept = 'application/json';
+    // ... existing code ...
 
-    plantForm.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const plantName = document.getElementById('plant-name').value;
-        const plantDate = document.getElementById('plant-date').value;
-        const growTime = parseInt(document.getElementById('plant-grow-time').value);
-        const waterAmount = 20;
-        const wateringFrequency = 1;
-        const bigBloomModifier = 100;
-        const growBigModifier = 100;
-        const tigerBloomModifier = 100;
-        const newPlant = {
-            name: plantName,
-            date: plantDate,
-            growTime: growTime,
-            waterAmount: waterAmount,
-            wateringFrequency: wateringFrequency,
-            bigBloomModifier: bigBloomModifier,
-            growBigModifier: growBigModifier,
-            tigerBloomModifier: tigerBloomModifier,
-        };
-        const editIndex = plantForm.getAttribute('data-edit-index');
-        if (editIndex !== null) {
-            plants[editIndex] = newPlant;
-            plantForm.removeAttribute('data-edit-index');
-            document.getElementById('add-plant-button').textContent = 'Add Plant';
-        } else {
-            plants.push(newPlant);
-        }
-        updatePlantsList();
-        plantForm.reset();
+    document.getElementById('confirmOverwrite').addEventListener('click', () => {
+        document.getElementById('import').click();
+        document.getElementById('confirmDialog').style.display = 'none';
     });
 
-    function updatePlantsList() {
-        plantsList.innerHTML = '';
-        plants.forEach((plant, index) => {
-            const listItem = document.createElement('li');
-            listItem.classList.add('plant-item');
-            listItem.innerHTML = `
-                <div class="card">
-                    <div class="card-header" id="heading${index}">
-                        <h2 class="mb-0">
-                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}">
-                                ${plant.name} (Planted on: ${plant.date})
-                            </button>
-                        </h2>
-                    </div>
-                    <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#plants">
-                        <div class="card-body">
-                            <p>Grow Time: ${plant.growTime} weeks</p>
-                            <p>Water Amount: ${plant.waterAmount} fluid oz</p>
-                            <p>Watering Frequency: ${plant.wateringFrequency} days</p>
-                            <p>Big Bloom Modifier: ${plant.bigBloomModifier} %</p>
-                            <p>Grow Big Modifier: ${plant.growBigModifier} %</p>
-                            <p>Tiger Bloom Modifier: ${plant.tigerBloomModifier} %</p>
-                            <button class="edit-plant" data-index="${index}">Edit</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            plantsList.appendChild(listItem);
-        });
-        bindEditButtons();
+    document.getElementById('confirmAdd').addEventListener('click', () => {
+        document.getElementById('import').click();
+        document.getElementById('confirmDialog').style.display = 'none';
+    });
+
+    document.getElementById('confirmCancel').addEventListener('click', () => {
+        document.getElementById('confirmDialog').style.display = 'none';
+    });
+
+    // Handle plant form submit
+    document.getElementById('plant-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        addPlant();
+    });
+
+    // Function to add a new plant
+    function addPlant() {
+        const name = document.getElementById('plant-name').value;
+        const date = document.getElementById('plant-date').value;
+        const growTime = document.getElementById('plant-grow-time').value;
+        const photo = document.getElementById('upload-photo').files[0];
+        const plant = {
+            name: name,
+            date: date,
+            growTime: growTime,
+            waterAmount: 20, // Default value, can be changed later
+            wateringFrequency: 1, // Default value, can be changed later
+            bigBloomModifier: 100,
+            growBigModifier: 100,
+            tigerBloomModifier: 100,
+            photo: photo ? URL.createObjectURL(photo) : null,
+        };
+
+        plants.push(plant);
+        localStorage.setItem('plants', JSON.stringify(plants));
+        renderPlants();
     }
 
-    function bindEditButtons() {
-        document.querySelectorAll('.edit-plant').forEach(button => {
+    // Function to render plants
+    function renderPlants() {
+        const plantsContainer = document.getElementById('plants');
+        plantsContainer.innerHTML = '';
+        plants.forEach((plant, index) => {
+            const plantItem = document.createElement('div');
+            plantItem.className = 'plant-item';
+            plantItem.innerHTML = `
+                <h3>${plant.name} (Planted on: ${plant.date})</h3>
+                <p>Grow Time: ${plant.growTime} weeks</p>
+                <p>Water Amount: ${plant.waterAmount} fluid oz</p>
+                <p>Watering Frequency: ${plant.wateringFrequency} days</p>
+                <p>Big Bloom Modifier: ${plant.bigBloomModifier} %</p>
+                <p>Grow Big Modifier: ${plant.growBigModifier} %</p>
+                <p>Tiger Bloom Modifier: ${plant.tigerBloomModifier} %</p>
+                <button class="edit-button" data-index="${index}">Edit</button>
+            `;
+            plantsContainer.appendChild(plantItem);
+        });
+
+        // Add event listeners to edit buttons
+        const editButtons = document.querySelectorAll('.edit-button');
+        editButtons.forEach(button => {
             button.addEventListener('click', function () {
-                const index = button.getAttribute('data-index');
+                const index = this.getAttribute('data-index');
                 editPlant(index);
             });
         });
     }
 
+    // Function to edit a plant
     function editPlant(index) {
         const plant = plants[index];
         document.getElementById('plant-name').value = plant.name;
         document.getElementById('plant-date').value = plant.date;
         document.getElementById('plant-grow-time').value = plant.growTime;
-        plantForm.setAttribute('data-edit-index', index);
-        document.getElementById('add-plant-button').textContent = 'Save Plant';
+
+        // Hide the add button and show update button
+        document.getElementById('add-plant-button').style.display = 'none';
+        const updateButton = document.createElement('button');
+        updateButton.textContent = 'Update Plant';
+        updateButton.id = 'update-plant-button';
+        updateButton.setAttribute('data-index', index);
+        document.getElementById('plant-form').appendChild(updateButton);
+
+        // Handle plant update
+        updateButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            const index = this.getAttribute('data-index');
+            plants[index].name = document.getElementById('plant-name').value;
+            plants[index].date = document.getElementById('plant-date').value;
+            plants[index].growTime = document.getElementById('plant-grow-time').value;
+            plants[index].photo = document.getElementById('upload-photo').files[0] ? URL.createObjectURL(document.getElementById('upload-photo').files[0]) : plant.photo;
+
+            localStorage.setItem('plants', JSON.stringify(plants));
+            renderPlants();
+
+            // Reset form and button states
+            document.getElementById('plant-form').reset();
+            updateButton.remove();
+            document.getElementById('add-plant-button').style.display = 'block';
+        });
     }
 
-    importButton.addEventListener('click', function () {
-        importFileInput.click();
-    });
+    // Initial render
+    renderPlants();
 
-    importFileInput.addEventListener('change', function (event) {
-        const file = event.target.files[0];
-        if (!file) {
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const contents = e.target.result;
-            const importedPlants = JSON.parse(contents);
-            showConfirmDialog(importedPlants);
-        };
-        reader.readAsText(file);
-    });
-
-    function showConfirmDialog(importedPlants) {
-        confirmDialog.style.display = 'block';
-        confirmOverwriteButton.onclick = function () {
-            plants = importedPlants;
-            updatePlantsList();
-            confirmDialog.style.display = 'none';
-        };
-        confirmAddButton.onclick = function () {
-            plants = plants.concat(importedPlants);
-            updatePlantsList();
-            confirmDialog.style.display = 'none';
-        };
-        confirmCancelButton.onclick = function () {
-            confirmDialog.style.display = 'none';
-        };
-    }
-
-    saveButton.addEventListener('click', function () {
-        const fileContent = JSON.stringify(plants);
-        const blob = new Blob([fileContent], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'plants.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    });
-
-    function getTodaysFeedings() {
-        const today = new Date().toISOString().split('T')[0];
-        const feedings = plants.map(plant => {
-            const plantDate = new Date(plant.date);
-            const daysSincePlanting = Math.floor((new Date(today) - plantDate) / (1000 * 60 * 60 * 24));
-            if (daysSincePlanting % plant.wateringFrequency === 0) {
-                return {
-                    name: plant.name,
-                    waterAmount: plant.waterAmount,
-                    bigBloom: (0.94 * (plant.bigBloomModifier / 100)).toFixed(2),
-                    growBig: (0.47 * (plant.growBigModifier / 100)).toFixed(2),
-                    tigerBloom: (0 * (plant.tigerBloomModifier / 100)).toFixed(2),
-                };
-            }
-            return null;
-        }).filter(feeding => feeding !== null);
-        return feedings;
-    }
-
-    function updateSchedulePage() {
-        const schedulePage = document.getElementById('schedulePage');
-        const todaysFeedings = getTodaysFeedings();
-        schedulePage.innerHTML = '<h2>Today\'s Feedings:</h2>';
-        if (todaysFeedings.length > 0) {
-            todaysFeedings.forEach(feeding => {
-                const feedingItem = document.createElement('div');
-                feedingItem.innerHTML = `
-                    <h3>${feeding.name}</h3>
-                    <p>Water Amount: ${feeding.waterAmount} fluid oz</p>
-                    <p>Big Bloom: ${feeding.bigBloom} tsp</p>
-                    <p>Grow Big: ${feeding.growBig} tsp</p>
-                    <p>Tiger Bloom: ${feeding.tigerBloom} tsp</p>
-                `;
-                schedulePage.appendChild(feedingItem);
-            });
-        } else {
-            schedulePage.innerHTML = '<h2>No feedings today</h2>';
-        }
-    }
-
+    // Event listeners for navigation
     document.getElementById('newPlantTab').addEventListener('click', function () {
+        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
         document.getElementById('newPlantPage').style.display = 'block';
-        document.getElementById('myPlantsPage').style.display = 'none';
-        document.getElementById('schedulePage').style.display = 'none';
-        document.getElementById('settingsPage').style.display = 'none';
     });
 
     document.getElementById('myPlantsTab').addEventListener('click', function () {
-        document.getElementById('newPlantPage').style.display = 'none';
+        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
         document.getElementById('myPlantsPage').style.display = 'block';
-        document.getElementById('schedulePage').style.display = 'none';
-        document.getElementById('settingsPage').style.display = 'none';
     });
 
     document.getElementById('scheduleTab').addEventListener('click', function () {
-        document.getElementById('newPlantPage').style.display = 'none';
-        document.getElementById('myPlantsPage').style.display = 'none';
+        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
         document.getElementById('schedulePage').style.display = 'block';
-        document.getElementById('settingsPage').style.display = 'none';
-        updateSchedulePage();
     });
 
     document.getElementById('settingsTab').addEventListener('click', function () {
-        document.getElementById('newPlantPage').style.display = 'none';
-        document.getElementById('myPlantsPage').style.display = 'none';
-        document.getElementById('schedulePage').style.display = 'none';
+        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
         document.getElementById('settingsPage').style.display = 'block';
     });
 });
