@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // ... existing code ...
+    // Existing code...
 
     document.getElementById('confirmOverwrite').addEventListener('click', () => {
         document.getElementById('import').click();
@@ -15,13 +15,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('confirmDialog').style.display = 'none';
     });
 
-    // Handle plant form submit
     document.getElementById('plant-form').addEventListener('submit', function (e) {
         e.preventDefault();
         addPlant();
     });
 
-    // Function to add a new plant
     function addPlant() {
         const name = document.getElementById('plant-name').value;
         const date = document.getElementById('plant-date').value;
@@ -31,8 +29,8 @@ document.addEventListener('DOMContentLoaded', function () {
             name: name,
             date: date,
             growTime: growTime,
-            waterAmount: 20, // Default value, can be changed later
-            wateringFrequency: 1, // Default value, can be changed later
+            waterAmount: 20,
+            wateringFrequency: 1,
             bigBloomModifier: 100,
             growBigModifier: 100,
             tigerBloomModifier: 100,
@@ -44,7 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
         renderPlants();
     }
 
-    // Function to render plants
     function renderPlants() {
         const plantsContainer = document.getElementById('plants');
         plantsContainer.innerHTML = '';
@@ -64,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function () {
             plantsContainer.appendChild(plantItem);
         });
 
-        // Add event listeners to edit buttons
         const editButtons = document.querySelectorAll('.edit-button');
         editButtons.forEach(button => {
             button.addEventListener('click', function () {
@@ -74,14 +70,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Function to edit a plant
     function editPlant(index) {
         const plant = plants[index];
         document.getElementById('plant-name').value = plant.name;
         document.getElementById('plant-date').value = plant.date;
         document.getElementById('plant-grow-time').value = plant.growTime;
 
-        // Hide the add button and show update button
         document.getElementById('add-plant-button').style.display = 'none';
         const updateButton = document.createElement('button');
         updateButton.textContent = 'Update Plant';
@@ -89,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function () {
         updateButton.setAttribute('data-index', index);
         document.getElementById('plant-form').appendChild(updateButton);
 
-        // Handle plant update
         updateButton.addEventListener('click', function (e) {
             e.preventDefault();
             const index = this.getAttribute('data-index');
@@ -101,34 +94,46 @@ document.addEventListener('DOMContentLoaded', function () {
             localStorage.setItem('plants', JSON.stringify(plants));
             renderPlants();
 
-            // Reset form and button states
             document.getElementById('plant-form').reset();
             updateButton.remove();
             document.getElementById('add-plant-button').style.display = 'block';
         });
     }
 
-    // Initial render
-    renderPlants();
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(page => {
+            page.style.display = page.id === pageId ? 'block' : 'none';
+        });
+    }
 
-    // Event listeners for navigation
     document.getElementById('newPlantTab').addEventListener('click', function () {
-        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-        document.getElementById('newPlantPage').style.display = 'block';
+        showPage('newPlantPage');
+        setActiveTab(this);
     });
 
     document.getElementById('myPlantsTab').addEventListener('click', function () {
-        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-        document.getElementById('myPlantsPage').style.display = 'block';
+        showPage('myPlantsPage');
+        setActiveTab(this);
     });
 
     document.getElementById('scheduleTab').addEventListener('click', function () {
-        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-        document.getElementById('schedulePage').style.display = 'block';
+        showPage('schedulePage');
+        setActiveTab(this);
     });
 
     document.getElementById('settingsTab').addEventListener('click', function () {
-        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
-        document.getElementById('settingsPage').style.display = 'block';
+        showPage('settingsPage');
+        setActiveTab(this);
     });
+
+    function setActiveTab(tab) {
+        document.querySelectorAll('.navbar a').forEach(navItem => {
+            navItem.classList.remove('active');
+        });
+        tab.classList.add('active');
+    }
+
+    renderPlants();
+    showPage('newPlantPage');
+    setActiveTab(document.getElementById('newPlantTab'));
 });
