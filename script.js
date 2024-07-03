@@ -1,19 +1,13 @@
-// Event listener for plant form submission
+// Adding event listener for the plant form submission
 document.getElementById('plant-form').addEventListener('submit', function (event) {
     event.preventDefault();
-    addPlant();
-});
-
-// Function to add a new plant
-function addPlant() {
-    const plants = JSON.parse(localStorage.getItem('plants')) || [];
 
     const newPlant = {
         name: document.getElementById('plant-name').value,
         date: document.getElementById('plant-date').value,
         growTime: document.getElementById('plant-grow-time').value,
-        waterAmount: document.getElementById('plant-water-amount').value,
-        wateringFrequency: document.getElementById('plant-watering-frequency').value,
+        waterAmount: document.getElementById('water-amount').value,
+        wateringFrequency: document.getElementById('watering-frequency').value,
         nutrientBrand: document.getElementById('plant-nutrient-brand').value,
         nutrients: Array.from(document.querySelectorAll('input[name="nutrients"]:checked')).map(nutrient => ({
             name: nutrient.value,
@@ -21,96 +15,15 @@ function addPlant() {
         }))
     };
 
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
     plants.push(newPlant);
     localStorage.setItem('plants', JSON.stringify(plants));
-    renderPlants();
-    clearForm();
-}
 
-// Function to clear the form after adding a plant
-function clearForm() {
     document.getElementById('plant-form').reset();
-    updateNutrientOptions(); // Clear nutrient options as well
-}
+    renderPlants();
+});
 
-// Function to render plants on the "My Plants" page
-function renderPlants() {
-    const plants = JSON.parse(localStorage.getItem('plants')) || [];
-    const plantList = document.getElementById('plants');
-    plantList.innerHTML = '';
-    plants.forEach((plant, index) => {
-        const plantItem = document.createElement('div');
-        plantItem.className = 'plant-item';
-        plantItem.innerHTML = `
-            <h3>${plant.name} (Planted on: ${plant.date})</h3>
-            <p>Grow Time: ${plant.growTime} weeks</p>
-            <p>Water Amount: ${plant.waterAmount} fluid oz</p>
-            <p>Watering Frequency: ${plant.wateringFrequency} days</p>
-            <p>Nutrient Brand: ${plant.nutrientBrand}</p>
-            ${plant.nutrients.map(nutrient => `
-                <p>${nutrient.name} Modifier: ${nutrient.modifier} %</p>
-            `).join('')}
-            <button onclick="editPlant(${index})">Edit</button>
-        `;
-        plantList.appendChild(plantItem);
-    });
-}
-
-// Function to update nutrient options based on the selected nutrient brand
-function updateNutrientOptions() {
-    const nutrientBrand = document.getElementById('plant-nutrient-brand').value;
-    const nutrientOptions = document.getElementById('nutrient-options');
-    nutrientOptions.innerHTML = '';
-
-    const nutrientList = {
-        'Fox Farms Trio': ['Big Bloom', 'Grow Big', 'Tiger Bloom'],
-        'General Hydroponics': ['FloraGro', 'FloraBloom', 'FloraMicro'],
-        'Advanced Nutrients': ['Sensi Grow', 'Sensi Bloom', 'Bud Candy'],
-        'Botanicare': ['Pure Blend Pro Grow', 'Pure Blend Pro Bloom', 'Cal-Mag Plus'],
-        'Dyna-Gro': ['Grow', 'Bloom', 'Pro-Tekt'],
-        'Roots Organics': ['Buddha Grow', 'Buddha Bloom', 'Surge']
-    };
-
-    nutrientList[nutrientBrand].forEach((nutrient, index) => {
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `plant-${nutrient.toLowerCase().replace(/ /g, '-')}`;
-        checkbox.name = 'nutrients';
-        checkbox.value = nutrient;
-        checkbox.onchange = () => toggleNutrientModifier(nutrient, index);
-
-        const label = document.createElement('label');
-        label.htmlFor = checkbox.id;
-        label.textContent = nutrient;
-
-        nutrientOptions.appendChild(checkbox);
-        nutrientOptions.appendChild(label);
-        nutrientOptions.appendChild(document.createElement('br'));
-
-        const modifierInput = document.createElement('input');
-        modifierInput.type = 'number';
-        modifierInput.id = `plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier`;
-        modifierInput.placeholder = `${nutrient} Modifier (%)`;
-        modifierInput.style.display = 'none';
-        nutrientOptions.appendChild(modifierInput);
-    });
-}
-
-// Toggle the display of nutrient modifier input based on the checkbox state
-function toggleNutrientModifier(nutrient, index) {
-    const checkbox = document.getElementById(`plant-${nutrient.toLowerCase().replace(/ /g, '-')}`);
-    const modifierInput = document.getElementById(`plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier`);
-    modifierInput.style.display = checkbox.checked ? 'block' : 'none';
-}
-
-// Toggle the display of nutrient modifier input in the edit form based on the checkbox state
-function toggleEditNutrientModifier(nutrient, index) {
-    const checkbox = document.getElementById(`edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}`);
-    const modifierInput = document.getElementById(`edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier`);
-    modifierInput.style.display = checkbox.checked ? 'block' : 'none';
-}
-
-// Function to handle import of plants
+// Adding event listener for the import plants button
 document.getElementById('import-plants-button').addEventListener('click', function () {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -134,6 +47,7 @@ document.getElementById('import-plants-button').addEventListener('click', functi
     fileInput.click();
 });
 
+// Function to import plants from a file
 function importPlants(plants, add) {
     if (!add) {
         localStorage.setItem('plants', JSON.stringify(plants));
@@ -145,7 +59,30 @@ function importPlants(plants, add) {
     renderPlants();
 }
 
-// Save the edited plant details
+// Function to render plants
+function renderPlants() {
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    const plantList = document.getElementById('plants');
+    plantList.innerHTML = '';
+    plants.forEach((plant, index) => {
+        const plantItem = document.createElement('div');
+        plantItem.className = 'plant-item';
+        plantItem.innerHTML = `
+            <h3>${plant.name} (Planted on: ${plant.date})</h3>
+            <p>Grow Time: ${plant.growTime} weeks</p>
+            <p>Water Amount: ${plant.waterAmount} fluid oz</p>
+            <p>Watering Frequency: ${plant.wateringFrequency} days</p>
+            <p>Nutrient Brand: ${plant.nutrientBrand}</p>
+            ${plant.nutrients.map(nutrient => `
+                <p>${nutrient.name} Modifier: ${nutrient.modifier} %</p>
+            `).join('')}
+            <button onclick="editPlant(${index})">Edit</button>
+        `;
+        plantList.appendChild(plantItem);
+    });
+}
+
+// Function to save the edited plant details
 function savePlant(index) {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
 
@@ -168,35 +105,13 @@ function savePlant(index) {
     renderPlants();
 }
 
-// Close the edit form
+// Function to close the edit form
 function closeEditForm() {
     const editForm = document.getElementById('edit-plant-form');
     if (editForm) {
         editForm.remove();
     }
 }
-
-// Initial rendering of plants
-document.addEventListener('DOMContentLoaded', function () {
-    renderPlants();
-    updateNutrientOptions(); // Update nutrient options when the page loads
-});
-
-// Event listeners for the navbar links
-document.querySelectorAll('.navbar a').forEach(link => {
-    link.addEventListener('click', function () {
-        document.querySelectorAll('.navbar a').forEach(nav => nav.classList.remove('active'));
-        link.classList.add('active');
-        
-        const sections = ['new-plant', 'my-plants', 'schedule', 'settings'];
-        sections.forEach(section => {
-            document.getElementById(section).style.display = 'none';
-        });
-
-        const targetSection = link.getAttribute('href').substring(1);
-        document.getElementById(targetSection).style.display = 'block';
-    });
-});
 
 // Function to edit a plant
 function editPlant(index) {
@@ -266,22 +181,50 @@ function updateEditNutrientOptions(index) {
         nutrientOptions.appendChild(checkbox);
         nutrientOptions.appendChild(label);
         nutrientOptions.appendChild(document.createElement('br'));
-
-        const modifierInput = document.createElement('input');
-        modifierInput.type = 'number';
-        modifierInput.id = `edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier`;
-        modifierInput.placeholder = `${nutrient} Modifier (%)`;
-        modifierInput.style.display = 'none';
-        nutrientOptions.appendChild(modifierInput);
     });
 
     plant.nutrients.forEach(nutrient => {
         const checkbox = document.getElementById(`edit-plant-${nutrient.name.toLowerCase().replace(/ /g, '-')}`);
-        const modifierInput = document.getElementById(`edit-plant-${nutrient.name.toLowerCase().replace(/ /g, '-')}-modifier`);
-        if (checkbox && modifierInput) {
+        if (checkbox) {
             checkbox.checked = true;
-            modifierInput.style.display = 'block';
-            modifierInput.value = nutrient.modifier;
+            toggleEditNutrientModifier(nutrient.name, index, nutrient.modifier);
         }
     });
 }
+
+// Function to toggle the nutrient modifier input in the edit form
+function toggleEditNutrientModifier(nutrient, index, modifierValue = '') {
+    const nutrientOptions = document.getElementById('edit-nutrient-options');
+    const existingModifier = document.getElementById(`edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier`);
+
+    if (!existingModifier) {
+        const modifier = document.createElement('input');
+        modifier.type = 'number';
+        modifier.id = `edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier`;
+        modifier.name = 'edit-nutrient-modifier';
+        modifier.placeholder = `${nutrient} Modifier (%)`;
+        modifier.value = modifierValue;
+        modifier.required = true;
+        nutrientOptions.appendChild(modifier);
+    } else {
+        existingModifier.remove();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    renderPlants();
+    document.querySelectorAll('.navbar a').forEach(link => {
+        link.addEventListener('click', function () {
+            document.querySelectorAll('.navbar a').forEach(nav => nav.classList.remove('active'));
+            link.classList.add('active');
+            
+            const sections = ['new-plant', 'my-plants', 'schedule', 'settings'];
+            sections.forEach(section => {
+                document.getElementById(section).style.display = 'none';
+            });
+
+            const targetSection = link.getAttribute('href').substring(1);
+            document.getElementById(targetSection).style.display = 'block';
+        });
+    });
+});
