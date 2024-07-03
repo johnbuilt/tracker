@@ -110,16 +110,17 @@ th input {
 }
 
 #edit-plant-form {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 500px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
     z-index: 1000;
+    width: 90%;
 }
 
 #edit-plant-form label {
@@ -151,4 +152,17 @@ th input {
 
 #edit-plant-form button:hover {
     background-color: #34495e;
+}
+
+#edit-plant-form button:nth-of-type(2) {
+    background-color: #e74c3c;
+}
+
+#edit-plant-form button:nth-of-type(2):hover {
+    background-color: #c0392b;
+}
+
+#nutrient-options,
+#edit-nutrient-options {
+    margin-top: 10px;
 }
