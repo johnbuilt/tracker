@@ -1,3 +1,26 @@
+document.getElementById('plant-form').addEventListener('submit', function (event) {
+    event.preventDefault();
+
+    const newPlant = {
+        name: document.getElementById('plant-name').value,
+        date: document.getElementById('plant-date').value,
+        growTime: document.getElementById('plant-grow-time').value,
+        waterAmount: document.getElementById('plant-water-amount').value,
+        wateringFrequency: document.getElementById('plant-watering-frequency').value,
+        bigBloomModifier: document.getElementById('plant-big-bloom-modifier').value || 100,
+        growBigModifier: document.getElementById('plant-grow-big-modifier').value || 100,
+        tigerBloomModifier: document.getElementById('plant-tiger-bloom-modifier').value || 100,
+    };
+
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    plants.push(newPlant);
+    localStorage.setItem('plants', JSON.stringify(plants));
+
+    renderPlants();
+    alert('Plant added successfully!');
+});
+
+
 document.getElementById('import-plants-button').addEventListener('click', function () {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -137,3 +160,17 @@ function closeEditForm() {
         overlay.remove();
     }
 }
+
+document.getElementById('save-plants-button').addEventListener('click', function () {
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    const fileName = 'plants.json';
+    const json = JSON.stringify(plants, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const href = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = href;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+});
