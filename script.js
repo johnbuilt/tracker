@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmOverwriteButton = document.getElementById('confirmOverwrite');
     const confirmAddButton = document.getElementById('confirmAdd');
     const confirmCancelButton = document.getElementById('confirmCancel');
+    const importFileInput = document.createElement('input');
+    importFileInput.type = 'file';
+    importFileInput.accept = 'application/json';
 
     plantForm.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -29,7 +32,14 @@ document.addEventListener('DOMContentLoaded', function () {
             growBigModifier: growBigModifier,
             tigerBloomModifier: tigerBloomModifier,
         };
-        plants.push(newPlant);
+        const editIndex = plantForm.getAttribute('data-edit-index');
+        if (editIndex !== null) {
+            plants[editIndex] = newPlant;
+            plantForm.removeAttribute('data-edit-index');
+            document.getElementById('add-plant-button').textContent = 'Add Plant';
+        } else {
+            plants.push(newPlant);
+        }
         updatePlantsList();
         plantForm.reset();
     });
@@ -48,7 +58,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             </button>
                         </h2>
                     </div>
-
                     <div id="collapse${index}" class="collapse" aria-labelledby="heading${index}" data-parent="#plants">
                         <div class="card-body">
                             <p>Grow Time: ${plant.growTime} weeks</p>
@@ -85,21 +94,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('add-plant-button').textContent = 'Save Plant';
     }
 
-    plantForm.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const index = plantForm.getAttribute('data-edit-index');
-        if (index !== null) {
-            const plant = plants[index];
-            plant.name = document.getElementById('plant-name').value;
-            plant.date = document.getElementById('plant-date').value;
-            plant.growTime = parseInt(document.getElementById('plant-grow-time').value);
-            updatePlantsList();
-            plantForm.removeAttribute('data-edit-index');
-            document.getElementById('add-plant-button').textContent = 'Add Plant';
-        }
+    importButton.addEventListener('click', function () {
+        importFileInput.click();
     });
 
-    importButton.addEventListener('change', function (event) {
+    importFileInput.addEventListener('change', function (event) {
         const file = event.target.files[0];
         if (!file) {
             return;
@@ -164,8 +163,8 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateSchedulePage() {
         const schedulePage = document.getElementById('schedulePage');
         const todaysFeedings = getTodaysFeedings();
+        schedulePage.innerHTML = '<h2>Today\'s Feedings:</h2>';
         if (todaysFeedings.length > 0) {
-            schedulePage.innerHTML = '<h2>Today\'s Feedings:</h2>';
             todaysFeedings.forEach(feeding => {
                 const feedingItem = document.createElement('div');
                 feedingItem.innerHTML = `
