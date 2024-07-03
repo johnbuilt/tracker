@@ -1,4 +1,3 @@
-// Add event listener for form submission
 document.getElementById('plant-form').addEventListener('submit', function (event) {
     event.preventDefault();
     const plant = {
@@ -7,7 +6,7 @@ document.getElementById('plant-form').addEventListener('submit', function (event
         growTime: document.getElementById('plant-grow-time').value,
         waterAmount: document.getElementById('water-amount').value,
         wateringFrequency: document.getElementById('watering-frequency').value,
-        nutrientBrand: document.getElementById('plant-nutrient-brand').value,
+        nutrientBrand: 'Fox Farms Trio', // Default to Fox Farms Trio
         nutrients: []
     };
 
@@ -17,10 +16,9 @@ document.getElementById('plant-form').addEventListener('submit', function (event
 
     renderPlants();
     this.reset();
-    document.getElementById('plant-nutrient-brand').value = "Fox Farms Trio";
+    showPopup('Plant successfully added!');
 });
 
-// Function to render plants
 function renderPlants() {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     const plantList = document.getElementById('plants');
@@ -29,21 +27,31 @@ function renderPlants() {
         const plantItem = document.createElement('div');
         plantItem.className = 'plant-item';
         plantItem.innerHTML = `
-            <h3>${plant.name} (Planted on: ${plant.date})</h3>
-            <p>Grow Time: ${plant.growTime} weeks</p>
-            <p>Water Amount: ${plant.waterAmount} fluid oz</p>
-            <p>Watering Frequency: ${plant.wateringFrequency} days</p>
-            <p>Nutrient Brand: ${plant.nutrientBrand}</p>
-            ${plant.nutrients.map(nutrient => `
-                <p>${nutrient.name} Modifier: ${nutrient.modifier} %</p>
-            `).join('')}
-            <button onclick="editPlant(${index})">Edit</button>
+            <h3 onclick="togglePlantDetails(${index})">${plant.name} (Planted on: ${plant.date})</h3>
+            <div id="plant-details-${index}" class="plant-details" style="display: none;">
+                <p>Grow Time: ${plant.growTime} weeks</p>
+                <p>Water Amount: ${plant.waterAmount} fluid oz</p>
+                <p>Watering Frequency: ${plant.wateringFrequency} days</p>
+                <p>Nutrient Brand: ${plant.nutrientBrand}</p>
+                ${plant.nutrients.map(nutrient => `
+                    <p>${nutrient.name} Modifier: ${nutrient.modifier} %</p>
+                `).join('')}
+                <button onclick="editPlant(${index})">Edit</button>
+            </div>
         `;
         plantList.appendChild(plantItem);
     });
 }
 
-// Function to import plants
+function togglePlantDetails(index) {
+    const details = document.getElementById(`plant-details-${index}`);
+    if (details.style.display === 'none') {
+        details.style.display = 'block';
+    } else {
+        details.style.display = 'none';
+    }
+}
+
 document.getElementById('import-plants-button').addEventListener('click', function () {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -76,9 +84,9 @@ function importPlants(plants, add) {
         localStorage.setItem('plants', JSON.stringify(newPlants));
     }
     renderPlants();
+    showPopup('Plants successfully imported!');
 }
 
-// Function to save plants to file
 function savePlantsToFile() {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(plants));
@@ -88,9 +96,9 @@ function savePlantsToFile() {
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
+    showPopup('Plants successfully saved!');
 }
 
-// Function to edit a plant
 function editPlant(index) {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     const plant = plants[index];
@@ -128,7 +136,6 @@ function editPlant(index) {
     updateEditNutrientOptions(index, plant.nutrients);
 }
 
-// Function to save the edited plant
 function savePlant(index) {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
 
@@ -157,9 +164,9 @@ function savePlant(index) {
     localStorage.setItem('plants', JSON.stringify(plants));
     closeEditForm();
     renderPlants();
+    showPopup('Plant successfully updated!');
 }
 
-// Function to close the edit form
 function closeEditForm() {
     const editForm = document.getElementById('edit-plant-form');
     if (editForm) {
@@ -167,7 +174,6 @@ function closeEditForm() {
     }
 }
 
-// Function to update nutrient options in the edit form
 function updateEditNutrientOptions(index, nutrients = []) {
     const brand = document.getElementById('edit-plant-nutrient-brand').value;
     const options = document.getElementById('edit-nutrient-options');
@@ -202,12 +208,22 @@ function updateEditNutrientOptions(index, nutrients = []) {
     });
 }
 
-// Initialize the app
+function showPopup(message) {
+    const popup = document.createElement('div');
+    popup.className = 'popup';
+    popup.textContent = message;
+    document.body.appendChild(popup);
+    setTimeout(() => {
+        popup.remove();
+    }, 3000);
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     renderPlants();
     document.getElementById('save-plants-button').addEventListener('click', savePlantsToFile);
     document.querySelectorAll('.navbar a').forEach(link => {
-        link.addEventListener('click', function () {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
             document.querySelectorAll('.navbar a').forEach(nav => nav.classList.remove('active'));
             link.classList.add('active');
             const sections = ['new-plant', 'my-plants', 'schedule', 'settings'];
@@ -219,4 +235,3 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
