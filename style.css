@@ -114,7 +114,6 @@ th input {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    margin-top: -150px; /* Adjust based on the form's height */
     padding: 20px;
     background-color: #fff;
     border-radius: 5px;
@@ -122,6 +121,8 @@ th input {
     z-index: 1001;
     width: 90%; /* Adjust as needed */
     max-width: 400px; /* Adjust as needed */
+    max-height: 80%; /* Ensure the form doesn't go off-screen */
+    overflow-y: auto; /* Enable scrolling if the content is too long */
 }
 
 .overlay {
