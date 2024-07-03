@@ -100,19 +100,38 @@ function savePlants() {
 }
 
 function importPlants() {
+    const confirmDiv = document.createElement('div');
+    confirmDiv.innerHTML = `
+        <div class="confirm-dialog">
+            <p>Do you want to add to existing plants or overwrite them?</p>
+            <button onclick="handleImportChoice('add')">Add</button>
+            <button onclick="handleImportChoice('overwrite')">Overwrite</button>
+        </div>
+    `;
+    document.body.appendChild(confirmDiv);
+}
+
+function handleImportChoice(choice) {
+    document.querySelector('.confirm-dialog').remove();
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = 'application/json';
-    input.addEventListener('change', handleFiles, false);
+    input.addEventListener('change', function () {
+        handleFiles(choice, this.files[0]);
+    }, false);
     input.click();
+}
 
-    function handleFiles() {
-        const file = this.files[0];
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            plants = JSON.parse(event.target.result);
-            displayPlants();
-        };
-        reader.readAsText(file);
-    }
+function handleFiles(choice, file) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const importedPlants = JSON.parse(event.target.result);
+        if (choice === 'add') {
+            plants = plants.concat(importedPlants);
+        } else if (choice === 'overwrite') {
+            plants = importedPlants;
+        }
+        displayPlants();
+    };
+    reader.readAsText(file);
 }
