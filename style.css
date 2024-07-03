@@ -3,6 +3,7 @@ body {
     margin: 20px;
     background-color: #f9f9f9;
     color: #333;
+    padding-bottom: 60px; /* Ensure space for the navbar */
 }
 
 h1 {
@@ -130,6 +131,7 @@ ul#plants {
     text-decoration: none;
     padding: 10px 20px;
     text-align: center;
+    flex-grow: 1;
 }
 
 .navbar a.active {
