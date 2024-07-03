@@ -10,6 +10,8 @@ document.getElementById('plant-form').addEventListener('submit', function (event
         nutrients: []
     };
 
+    console.log('Adding plant:', plant); // Debugging log
+
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     plants.push(plant);
     localStorage.setItem('plants', JSON.stringify(plants));
