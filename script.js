@@ -1,3 +1,12 @@
+const nutrientOptions = {
+    "Fox Farms Trio": ["Big Bloom", "Grow Big", "Tiger Bloom"],
+    "General Hydroponics": ["FloraGro", "FloraBloom", "FloraMicro"],
+    "Advanced Nutrients": ["Grow", "Micro", "Bloom"],
+    "Botanicare": ["Pure Blend Grow", "Pure Blend Bloom", "Liquid Karma"],
+    "Dyna-Gro": ["Foliage-Pro", "Bloom", "Pro-TeKt"],
+    "Roots Organics": ["Buddha Grow", "Buddha Bloom", "Trinity"]
+};
+
 document.getElementById('plant-form').addEventListener('submit', function (event) {
     event.preventDefault();
 
@@ -8,10 +17,15 @@ document.getElementById('plant-form').addEventListener('submit', function (event
         waterAmount: document.getElementById('plant-water-amount').value,
         wateringFrequency: document.getElementById('plant-watering-frequency').value,
         nutrientBrand: document.getElementById('plant-nutrient-brand').value,
-        bigBloomModifier: document.getElementById('plant-big-bloom-modifier').value || 100,
-        growBigModifier: document.getElementById('plant-grow-big-modifier').value || 100,
-        tigerBloomModifier: document.getElementById('plant-tiger-bloom-modifier').value || 100,
+        nutrients: {}
     };
+
+    const selectedNutrients = document.querySelectorAll('.nutrient-checkbox:checked');
+    selectedNutrients.forEach(nutrient => {
+        const nutrientName = nutrient.value;
+        const modifier = document.getElementById(`modifier-${nutrientName}`).value || 100;
+        newPlant.nutrients[nutrientName] = modifier;
+    });
 
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     plants.push(newPlant);
@@ -21,11 +35,41 @@ document.getElementById('plant-form').addEventListener('submit', function (event
     alert('Plant added successfully!');
 });
 
+function updateNutrientOptions() {
+    const nutrientBrand = document.getElementById('plant-nutrient-brand').value;
+    const nutrientOptionsContainer = document.getElementById('nutrient-options');
+    nutrientOptionsContainer.innerHTML = '';
+
+    if (nutrientOptions[nutrientBrand]) {
+        nutrientOptions[nutrientBrand].forEach(nutrient => {
+            const nutrientOption = document.createElement('div');
+            nutrientOption.innerHTML = `
+                <label>
+                    <input type="checkbox" class="nutrient-checkbox" value="${nutrient}" onchange="toggleModifierInput('${nutrient}')">
+                    ${nutrient}
+                </label>
+                <input type="number" id="modifier-${nutrient}" class="nutrient-modifier" placeholder="${nutrient} Modifier (%)" style="display:none;">
+            `;
+            nutrientOptionsContainer.appendChild(nutrientOption);
+        });
+    }
+}
+
+function toggleModifierInput(nutrient) {
+    const modifierInput = document.getElementById(`modifier-${nutrient}`);
+    modifierInput.style.display = modifierInput.style.display === 'none' ? 'block' : 'none';
+}
+
 function renderPlants() {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     const plantList = document.getElementById('plants');
     plantList.innerHTML = '';
     plants.forEach((plant, index) => {
+        let nutrientInfo = '';
+        for (const [nutrient, modifier] of Object.entries(plant.nutrients)) {
+            nutrientInfo += `<p>${nutrient} Modifier: ${modifier} %</p>`;
+        }
+
         const plantItem = document.createElement('div');
         plantItem.className = 'plant-item';
         plantItem.innerHTML = `
@@ -34,9 +78,7 @@ function renderPlants() {
             <p>Water Amount: ${plant.waterAmount} fluid oz</p>
             <p>Watering Frequency: ${plant.wateringFrequency} days</p>
             <p>Nutrient Brand: ${plant.nutrientBrand}</p>
-            <p>Big Bloom Modifier: ${plant.bigBloomModifier} %</p>
-            <p>Grow Big Modifier: ${plant.growBigModifier} %</p>
-            <p>Tiger Bloom Modifier: ${plant.tigerBloomModifier} %</p>
+            ${nutrientInfo}
             <button onclick="editPlant(${index})">Edit</button>
         `;
         plantList.appendChild(plantItem);
@@ -46,6 +88,20 @@ function renderPlants() {
 function editPlant(index) {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     const plant = plants[index];
+
+    let nutrientOptionsHTML = '';
+    if (nutrientOptions[plant.nutrientBrand]) {
+        nutrientOptions[plant.nutrientBrand].forEach(nutrient => {
+            const isChecked = plant.nutrients[nutrient] !== undefined;
+            nutrientOptionsHTML += `
+                <label>
+                    <input type="checkbox" class="nutrient-checkbox" value="${nutrient}" onchange="toggleModifierInput('${nutrient}')" ${isChecked ? 'checked' : ''}>
+                    ${nutrient}
+                </label>
+                <input type="number" id="modifier-${nutrient}" class="nutrient-modifier" placeholder="${nutrient} Modifier (%)" value="${plant.nutrients[nutrient] || 100}" style="display:${isChecked ? 'block' : 'none'};">
+            `;
+        });
+    }
 
     const editForm = `
         <div id="edit-plant-form" class="modal">
@@ -60,20 +116,12 @@ function editPlant(index) {
             <label for="edit-watering-frequency">Watering Frequency (days):</label>
             <input type="number" id="edit-watering-frequency" value="${plant.wateringFrequency}" required>
             <label for="edit-nutrient-brand">Nutrients:</label>
-            <select id="edit-nutrient-brand" required>
-                <option value="Fox Farms Trio" ${plant.nutrientBrand === "Fox Farms Trio" ? 'selected' : ''}>Fox Farms Trio</option>
-                <option value="General Hydroponics" ${plant.nutrientBrand === "General Hydroponics" ? 'selected' : ''}>General Hydroponics</option>
-                <option value="Advanced Nutrients" ${plant.nutrientBrand === "Advanced Nutrients" ? 'selected' : ''}>Advanced Nutrients</option>
-                <option value="Botanicare" ${plant.nutrientBrand === "Botanicare" ? 'selected' : ''}>Botanicare</option>
-                <option value="Dyna-Gro" ${plant.nutrientBrand === "Dyna-Gro" ? 'selected' : ''}>Dyna-Gro</option>
-                <option value="Roots Organics" ${plant.nutrientBrand === "Roots Organics" ? 'selected' : ''}>Roots Organics</option>
+            <select id="edit-nutrient-brand" required onchange="updateNutrientOptionsEdit('${index}')">
+                ${Object.keys(nutrientOptions).map(brand => `
+                    <option value="${brand}" ${brand === plant.nutrientBrand ? 'selected' : ''}>${brand}</option>
+                `).join('')}
             </select>
-            <label for="edit-big-bloom-modifier">Big Bloom Modifier (%):</label>
-            <input type="number" id="edit-big-bloom-modifier" value="${plant.bigBloomModifier}" required>
-            <label for="edit-grow-big-modifier">Grow Big Modifier (%):</label>
-            <input type="number" id="edit-grow-big-modifier" value="${plant.growBigModifier}" required>
-            <label for="edit-tiger-bloom-modifier">Tiger Bloom Modifier (%):</label>
-            <input type="number" id="edit-tiger-bloom-modifier" value="${plant.tigerBloomModifier}" required>
+            <div id="nutrient-options-edit">${nutrientOptionsHTML}</div>
             <button onclick="savePlant(${index})">Save</button>
             <button onclick="closeEditForm()">Cancel</button>
         </div>
@@ -81,6 +129,27 @@ function editPlant(index) {
 
     const plantList = document.getElementById('plants');
     plantList.innerHTML += editForm;
+}
+
+function updateNutrientOptionsEdit(index) {
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    const plant = plants[index];
+    const nutrientBrand = document.getElementById('edit-nutrient-brand').value;
+    const nutrientOptionsContainer = document.getElementById('nutrient-options-edit');
+    nutrientOptionsContainer.innerHTML = '';
+
+    if (nutrientOptions[nutrientBrand]) {
+        nutrientOptions[nutrientBrand].forEach(nutrient => {
+            const isChecked = plant.nutrients[nutrient] !== undefined;
+            nutrientOptionsContainer.innerHTML += `
+                <label>
+                    <input type="checkbox" class="nutrient-checkbox" value="${nutrient}" onchange="toggleModifierInput('${nutrient}')" ${isChecked ? 'checked' : ''}>
+                    ${nutrient}
+                </label>
+                <input type="number" id="modifier-${nutrient}" class="nutrient-modifier" placeholder="${nutrient} Modifier (%)" value="${plant.nutrients[nutrient] || 100}" style="display:${isChecked ? 'block' : 'none'};">
+            `;
+        });
+    }
 }
 
 function savePlant(index) {
@@ -93,10 +162,15 @@ function savePlant(index) {
         waterAmount: document.getElementById('edit-water-amount').value,
         wateringFrequency: document.getElementById('edit-watering-frequency').value,
         nutrientBrand: document.getElementById('edit-nutrient-brand').value,
-        bigBloomModifier: document.getElementById('edit-big-bloom-modifier').value,
-        growBigModifier: document.getElementById('edit-grow-big-modifier').value,
-        tigerBloomModifier: document.getElementById('edit-tiger-bloom-modifier').value
+        nutrients: {}
     };
+
+    const selectedNutrients = document.querySelectorAll('.nutrient-checkbox:checked');
+    selectedNutrients.forEach(nutrient => {
+        const nutrientName = nutrient.value;
+        const modifier = document.getElementById(`modifier-${nutrientName}`).value || 100;
+        updatedPlant.nutrients[nutrientName] = modifier;
+    });
 
     plants[index] = updatedPlant;
     localStorage.setItem('plants', JSON.stringify(plants));
@@ -104,23 +178,65 @@ function savePlant(index) {
     renderPlants();
 }
 
-function closeEditForm() {
-    const editForm = document.getElementById('edit-plant-form');
-    if (editForm) {
-        editForm.remove();
+document.getElementById('import-plants-button').addEventListener('click', function () {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.onchange = function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const data = JSON.parse(e.target.result);
+                const addOrOverwrite = confirm("Do you want to add to existing plants? Click 'Cancel' to overwrite.");
+                if (addOrOverwrite) {
+                    importPlants(data, true);
+                } else {
+                    importPlants(data, false);
+                }
+            };
+            reader.readAsText(file);
+        }
+    };
+    fileInput.click();
+});
+
+function importPlants(plants, add) {
+    if (!add) {
+        localStorage.setItem('plants', JSON.stringify(plants));
+    } else {
+        const existingPlants = JSON.parse(localStorage.getItem('plants')) || [];
+        const newPlants = existingPlants.concat(plants);
+        localStorage.setItem('plants', JSON.stringify(newPlants));
     }
+    renderPlants();
 }
 
 document.getElementById('save-plants-button').addEventListener('click', function () {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
-    const fileName = 'plants.json';
-    const json = JSON.stringify(plants, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const href = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = href;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const file = new Blob([JSON.stringify(plants)], {type: 'application/json'});
+    const fileURL = URL.createObjectURL(file);
+    const a = document.createElement('a');
+    a.href = fileURL;
+    a.download = 'plants.json';
+    a.click();
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    renderPlants();
+});
+
+document.querySelectorAll('.navbar a').forEach(link => {
+    link.addEventListener('click', function () {
+        document.querySelectorAll('.navbar a').forEach(nav => nav.classList.remove('active'));
+        link.classList.add('active');
+        
+        const sections = ['new-plant', 'my-plants', 'schedule', 'settings'];
+        sections.forEach(section => {
+            document.getElementById(section).style.display = 'none';
+        });
+
+        const targetSection = link.getAttribute('href').substring(1);
+        document.getElementById(targetSection).style.display = 'block';
+    });
 });
