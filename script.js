@@ -11,23 +11,13 @@ document.getElementById('plant-form').addEventListener('submit', function (event
         nutrients: []
     };
 
-    document.querySelectorAll('#nutrient-options input[type="checkbox"]').forEach(checkbox => {
-        if (checkbox.checked) {
-            const nutrientName = checkbox.value;
-            const modifierValue = document.getElementById(`${nutrientName.toLowerCase().replace(/ /g, '-')}-modifier`).value;
-            plant.nutrients.push({
-                name: nutrientName,
-                modifier: modifierValue
-            });
-        }
-    });
-
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
     plants.push(plant);
     localStorage.setItem('plants', JSON.stringify(plants));
 
     renderPlants();
     this.reset();
+    document.getElementById('plant-nutrient-brand').value = "Fox Farms Trio";
 });
 
 // Function to render plants
@@ -177,40 +167,6 @@ function closeEditForm() {
     }
 }
 
-// Function to update nutrient options based on the selected brand
-function updateNutrientOptions() {
-    const brand = document.getElementById('plant-nutrient-brand').value;
-    const options = document.getElementById('nutrient-options');
-    options.innerHTML = '';
-
-    let nutrients = [];
-    if (brand === 'Fox Farms Trio') {
-        nutrients = ['Big Bloom', 'Grow Big', 'Tiger Bloom'];
-    } else if (brand === 'General Hydroponics') {
-        nutrients = ['FloraGro', 'FloraBloom', 'FloraMicro'];
-    } else if (brand === 'Advanced Nutrients') {
-        nutrients = ['Micro', 'Grow', 'Bloom'];
-    } else if (brand === 'Botanicare') {
-        nutrients = ['Pure Blend Pro', 'Liquid Karma', 'Cal-Mag Plus'];
-    } else if (brand === 'Dyna-Gro') {
-        nutrients = ['Foliage-Pro', 'Bloom', 'Protekt'];
-    } else if (brand === 'Roots Organics') {
-        nutrients = ['Buddha Grow', 'Buddha Bloom', 'Trinity'];
-    }
-
-    nutrients.forEach(nutrient => {
-        const nutrientOption = document.createElement('div');
-        nutrientOption.innerHTML = `
-            <label>
-                <input type="checkbox" value="${nutrient}">
-                ${nutrient}
-            </label>
-            <input type="number" id="${nutrient.toLowerCase().replace(/ /g, '-')}-modifier" placeholder="${nutrient} Modifier (%)">
-        `;
-        options.appendChild(nutrientOption);
-    });
-}
-
 // Function to update nutrient options in the edit form
 function updateEditNutrientOptions(index, nutrients = []) {
     const brand = document.getElementById('edit-plant-nutrient-brand').value;
@@ -249,7 +205,6 @@ function updateEditNutrientOptions(index, nutrients = []) {
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function () {
     renderPlants();
-    document.getElementById('plant-nutrient-brand').addEventListener('change', updateNutrientOptions);
     document.getElementById('save-plants-button').addEventListener('click', savePlantsToFile);
     document.querySelectorAll('.navbar a').forEach(link => {
         link.addEventListener('click', function () {
@@ -264,3 +219,4 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
