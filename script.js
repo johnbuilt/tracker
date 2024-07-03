@@ -4,8 +4,8 @@ document.getElementById('plant-form').addEventListener('submit', function (event
         name: document.getElementById('plant-name').value,
         date: document.getElementById('plant-date').value,
         growTime: document.getElementById('plant-grow-time').value,
-        waterAmount: document.getElementById('water-amount').value,
-        wateringFrequency: document.getElementById('watering-frequency').value,
+        waterAmount: 0, // Placeholder for default values
+        wateringFrequency: 0, // Placeholder for default values
         nutrientBrand: 'Fox Farms Trio', // Default to Fox Farms Trio
         nutrients: []
     };
