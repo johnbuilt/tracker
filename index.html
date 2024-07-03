@@ -8,49 +8,24 @@
 </head>
 <body>
     <h1>Cannabis Plant Manager</h1>
-    <div id="newPlantPage" class="page">
-        <form id="plant-form">
-            <label for="plant-name">Plant Name:</label>
-            <input type="text" id="plant-name" required>
-            <label for="plant-date">Planting Date:</label>
-            <input type="date" id="plant-date" required>
-            <label for="plant-grow-time">Grow Time (weeks):</label>
-            <input type="number" id="plant-grow-time" required>
-            <label for="upload-photo">Upload Photo:</label>
-            <input type="file" id="upload-photo">
-            <button type="submit" id="add-plant-button">Add Plant</button>
-        </form>
-    </div>
-
-    <div id="myPlantsPage" class="page" style="display:none;">
-        <input type="file" id="import" style="display:none;">
-        <button onclick="document.getElementById('import').click();">Import Plants</button>
-        <button id="save">Save Plants to File</button>
-        <ul id="plants"></ul>
-    </div>
-
-    <div id="schedulePage" class="page" style="display:none;">
-        <h2>Today's Feedings:</h2>
-    </div>
-
-    <div id="settingsPage" class="page" style="display:none;">
-        <h2>Settings</h2>
-    </div>
-
+    <form id="plant-form">
+        <label for="plant-name">Plant Name:</label>
+        <input type="text" id="plant-name" required>
+        <label for="plant-date">Planting Date:</label>
+        <input type="date" id="plant-date" required>
+        <label for="plant-grow-time">Grow Time (weeks):</label>
+        <input type="number" id="plant-grow-time" required>
+        <label for="plant-photo">Upload Photo:</label>
+        <input type="file" id="plant-photo" accept="image/*">
+        <button type="submit">Add Plant</button>
+    </form>
+    <div id="plants"></div>
     <div class="navbar">
-        <a href="#" id="newPlantTab" class="active">New Plant</a>
-        <a href="#" id="myPlantsTab">My Plants</a>
-        <a href="#" id="scheduleTab">Schedule</a>
-        <a href="#" id="settingsTab">Settings</a>
+        <a href="#new-plant" class="active">New Plant</a>
+        <a href="#my-plants">My Plants</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#settings">Settings</a>
     </div>
-
-    <div id="confirmDialog" class="confirm-dialog" style="display:none;">
-        <p>Do you want to add to existing plants or overwrite the current plants?</p>
-        <button id="confirmOverwrite">Overwrite</button>
-        <button id="confirmAdd">Add</button>
-        <button id="confirmCancel">Cancel</button>
-    </div>
-
     <script src="script.js"></script>
 </body>
 </html>
