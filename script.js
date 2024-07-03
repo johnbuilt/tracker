@@ -156,7 +156,7 @@ function savePlant(index) {
         waterAmount: document.getElementById('edit-water-amount').value,
         wateringFrequency: document.getElementById('edit-watering-frequency').value,
         nutrientBrand: document.getElementById('edit-plant-nutrient-brand').value,
-        nutrients: Array.from(document.querySelectorAll('input[name="nutrients"]:checked')).map(nutrient => ({
+        nutrients: Array.from(document.querySelectorAll('input[name="edit-nutrients"]:checked')).map(nutrient => ({
             name: nutrient.value,
             modifier: document.getElementById(`edit-plant-${nutrient.value.toLowerCase().replace(/ /g, '-')}-modifier`).value
         }))
@@ -179,6 +179,7 @@ function closeEditForm() {
 // Initial rendering of plants
 document.addEventListener('DOMContentLoaded', function () {
     renderPlants();
+    updateNutrientOptions(); // Update nutrient options when the page loads
 });
 
 // Event listeners for the navbar links
@@ -196,3 +197,91 @@ document.querySelectorAll('.navbar a').forEach(link => {
         document.getElementById(targetSection).style.display = 'block';
     });
 });
+
+// Function to edit a plant
+function editPlant(index) {
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    const plant = plants[index];
+
+    const editForm = document.createElement('div');
+    editForm.id = 'edit-plant-form';
+    editForm.innerHTML = `
+        <label for="edit-plant-name">Plant Name:</label>
+        <input type="text" id="edit-plant-name" value="${plant.name}" required>
+        <label for="edit-plant-date">Planting Date:</label>
+        <input type="date" id="edit-plant-date" value="${plant.date}" required>
+        <label for="edit-plant-grow-time">Grow Time (weeks):</label>
+        <input type="number" id="edit-plant-grow-time" value="${plant.growTime}" required>
+        <label for="edit-water-amount">Water Amount (fluid oz):</label>
+        <input type="number" id="edit-water-amount" value="${plant.waterAmount}" required>
+        <label for="edit-watering-frequency">Watering Frequency (days):</label>
+        <input type="number" id="edit-watering-frequency" value="${plant.wateringFrequency}" required>
+        <label for="edit-plant-nutrient-brand">Nutrients:</label>
+        <select id="edit-plant-nutrient-brand" required onchange="updateEditNutrientOptions(${index})">
+            <option value="Fox Farms Trio" ${plant.nutrientBrand === 'Fox Farms Trio' ? 'selected' : ''}>Fox Farms Trio</option>
+            <option value="General Hydroponics" ${plant.nutrientBrand === 'General Hydroponics' ? 'selected' : ''}>General Hydroponics</option>
+            <option value="Advanced Nutrients" ${plant.nutrientBrand === 'Advanced Nutrients' ? 'selected' : ''}>Advanced Nutrients</option>
+            <option value="Botanicare" ${plant.nutrientBrand === 'Botanicare' ? 'selected' : ''}>Botanicare</option>
+            <option value="Dyna-Gro" ${plant.nutrientBrand === 'Dyna-Gro' ? 'selected' : ''}>Dyna-Gro</option>
+            <option value="Roots Organics" ${plant.nutrientBrand === 'Roots Organics' ? 'selected' : ''}>Roots Organics</option>
+        </select>
+        <div id="edit-nutrient-options"></div>
+        <button onclick="savePlant(${index})">Save</button>
+        <button onclick="closeEditForm()">Cancel</button>
+    `;
+
+    document.body.appendChild(editForm);
+    updateEditNutrientOptions(index);
+}
+
+// Function to update nutrient options in the edit form based on the selected nutrient brand
+function updateEditNutrientOptions(index) {
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    const plant = plants[index];
+    const nutrientBrand = document.getElementById('edit-plant-nutrient-brand').value;
+    const nutrientOptions = document.getElementById('edit-nutrient-options');
+    nutrientOptions.innerHTML = '';
+
+    const nutrientList = {
+        'Fox Farms Trio': ['Big Bloom', 'Grow Big', 'Tiger Bloom'],
+        'General Hydroponics': ['FloraGro', 'FloraBloom', 'FloraMicro'],
+        'Advanced Nutrients': ['Sensi Grow', 'Sensi Bloom', 'Bud Candy'],
+        'Botanicare': ['Pure Blend Pro Grow', 'Pure Blend Pro Bloom', 'Cal-Mag Plus'],
+        'Dyna-Gro': ['Grow', 'Bloom', 'Pro-Tekt'],
+        'Roots Organics': ['Buddha Grow', 'Buddha Bloom', 'Surge']
+    };
+
+    nutrientList[nutrientBrand].forEach((nutrient, index) => {
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.id = `edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}`;
+        checkbox.name = 'edit-nutrients';
+        checkbox.value = nutrient;
+        checkbox.onchange = () => toggleEditNutrientModifier(nutrient, index);
+
+        const label = document.createElement('label');
+        label.htmlFor = checkbox.id;
+        label.textContent = nutrient;
+
+        nutrientOptions.appendChild(checkbox);
+        nutrientOptions.appendChild(label);
+        nutrientOptions.appendChild(document.createElement('br'));
+
+        const modifierInput = document.createElement('input');
+        modifierInput.type = 'number';
+        modifierInput.id = `edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier`;
+        modifierInput.placeholder = `${nutrient} Modifier (%)`;
+        modifierInput.style.display = 'none';
+        nutrientOptions.appendChild(modifierInput);
+    });
+
+    plant.nutrients.forEach(nutrient => {
+        const checkbox = document.getElementById(`edit-plant-${nutrient.name.toLowerCase().replace(/ /g, '-')}`);
+        const modifierInput = document.getElementById(`edit-plant-${nutrient.name.toLowerCase().replace(/ /g, '-')}-modifier`);
+        if (checkbox && modifierInput) {
+            checkbox.checked = true;
+            modifierInput.style.display = 'block';
+            modifierInput.value = nutrient.modifier;
+        }
+    });
+}
