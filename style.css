@@ -90,9 +90,9 @@ th input {
     background-color: #2c3e50;
     overflow: hidden;
     display: flex;
-    justify-content: space-around; /* Adjust alignment */
-    padding: 0; /* Remove any padding */
-    margin: 0; /* Remove any margin */
+    justify-content: space-around;
+    padding: 0;
+    margin: 0;
 }
 
 .navbar a {
@@ -100,7 +100,7 @@ th input {
     display: block;
     color: #f2f2f2;
     text-align: center;
-    padding: 14px 0; /* Adjust padding */
+    padding: 14px 0;
     text-decoration: none;
     font-size: 17px;
 }
