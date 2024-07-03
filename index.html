@@ -8,12 +8,15 @@
 </head>
 <body>
     <h1>Cannabis Plant Manager</h1>
-    <div id="content"></div>
-    <div class="nav-bar">
-        <button class="nav-button" onclick="navigateTo('new-plant')">New Plant</button>
-        <button class="nav-button" onclick="navigateTo('my-plants')">My Plants</button>
-        <button class="nav-button" onclick="navigateTo('schedule')">Schedule</button>
-        <button class="nav-button" onclick="navigateTo('settings')">Settings</button>
+    <div id="content">
+        <!-- Content will be injected here based on the navigation -->
+    </div>
+
+    <div class="navbar">
+        <a href="#new-plant" class="active">New Plant</a>
+        <a href="#my-plants">My Plants</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#settings">Settings</a>
     </div>
 
     <script src="script.js"></script>
