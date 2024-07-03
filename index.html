@@ -17,12 +17,12 @@
             <input type="date" id="plant-date" required>
             <label for="plant-grow-time">Grow Time (weeks):</label>
             <input type="number" id="plant-grow-time" required>
-            <label for="plant-water-amount">Water Amount (fluid oz):</label>
-            <input type="number" id="plant-water-amount" required>
-            <label for="plant-watering-frequency">Watering Frequency (days):</label>
-            <input type="number" id="plant-watering-frequency" required>
+            <label for="water-amount">Water Amount (fluid oz):</label>
+            <input type="number" id="water-amount" required>
+            <label for="watering-frequency">Watering Frequency (days):</label>
+            <input type="number" id="watering-frequency" required>
             <label for="plant-nutrient-brand">Nutrients:</label>
-            <select id="plant-nutrient-brand" required>
+            <select id="plant-nutrient-brand" required onchange="updateNutrientOptions()">
                 <option value="Fox Farms Trio">Fox Farms Trio</option>
                 <option value="General Hydroponics">General Hydroponics</option>
                 <option value="Advanced Nutrients">Advanced Nutrients</option>
@@ -37,7 +37,7 @@
 
     <div id="my-plants" class="content-section" style="display:none;">
         <button id="import-plants-button">Import Plants</button>
-        <button id="save-plants-button">Save Plants to File</button>
+        <button id="save-plants-button" onclick="savePlantsToFile()">Save Plants to File</button>
         <div id="plants"></div>
     </div>
 
