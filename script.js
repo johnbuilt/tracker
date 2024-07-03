@@ -1,63 +1,34 @@
-// Adding event listener for the plant form submission
+// Add event listener for form submission
 document.getElementById('plant-form').addEventListener('submit', function (event) {
     event.preventDefault();
-
-    const newPlant = {
+    const plant = {
         name: document.getElementById('plant-name').value,
         date: document.getElementById('plant-date').value,
         growTime: document.getElementById('plant-grow-time').value,
         waterAmount: document.getElementById('water-amount').value,
         wateringFrequency: document.getElementById('watering-frequency').value,
         nutrientBrand: document.getElementById('plant-nutrient-brand').value,
-        nutrients: Array.from(document.querySelectorAll('input[name="nutrients"]:checked')).map(nutrient => ({
-            name: nutrient.value,
-            modifier: document.getElementById(`plant-${nutrient.value.toLowerCase().replace(/ /g, '-')}-modifier`).value
-        }))
+        nutrients: []
     };
+
+    document.querySelectorAll('#nutrient-options input[type="checkbox"]').forEach(checkbox => {
+        if (checkbox.checked) {
+            const nutrientName = checkbox.value;
+            const modifierValue = document.getElementById(`${nutrientName.toLowerCase().replace(/ /g, '-')}-modifier`).value;
+            plant.nutrients.push({
+                name: nutrientName,
+                modifier: modifierValue
+            });
+        }
+    });
 
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
-    plants.push(newPlant);
+    plants.push(plant);
     localStorage.setItem('plants', JSON.stringify(plants));
 
-    document.getElementById('plant-form').reset();
     renderPlants();
+    this.reset();
 });
-
-// Adding event listener for the import plants button
-document.getElementById('import-plants-button').addEventListener('click', function () {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = '.json';
-    fileInput.onchange = function (event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const data = JSON.parse(e.target.result);
-                const addOrOverwrite = confirm("Do you want to add to existing plants? Click 'Cancel' to overwrite.");
-                if (addOrOverwrite) {
-                    importPlants(data, true);
-                } else {
-                    importPlants(data, false);
-                }
-            };
-            reader.readAsText(file);
-        }
-    };
-    fileInput.click();
-});
-
-// Function to import plants from a file
-function importPlants(plants, add) {
-    if (!add) {
-        localStorage.setItem('plants', JSON.stringify(plants));
-    } else {
-        const existingPlants = JSON.parse(localStorage.getItem('plants')) || [];
-        const newPlants = existingPlants.concat(plants);
-        localStorage.setItem('plants', JSON.stringify(newPlants));
-    }
-    renderPlants();
-}
 
 // Function to render plants
 function renderPlants() {
@@ -82,35 +53,51 @@ function renderPlants() {
     });
 }
 
-// Function to save the edited plant details
-function savePlant(index) {
-    const plants = JSON.parse(localStorage.getItem('plants')) || [];
-
-    const updatedPlant = {
-        name: document.getElementById('edit-plant-name').value,
-        date: document.getElementById('edit-plant-date').value,
-        growTime: document.getElementById('edit-plant-grow-time').value,
-        waterAmount: document.getElementById('edit-water-amount').value,
-        wateringFrequency: document.getElementById('edit-watering-frequency').value,
-        nutrientBrand: document.getElementById('edit-plant-nutrient-brand').value,
-        nutrients: Array.from(document.querySelectorAll('input[name="edit-nutrients"]:checked')).map(nutrient => ({
-            name: nutrient.value,
-            modifier: document.getElementById(`edit-plant-${nutrient.value.toLowerCase().replace(/ /g, '-')}-modifier`).value
-        }))
+// Function to import plants
+document.getElementById('import-plants-button').addEventListener('click', function () {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.json';
+    fileInput.onchange = function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const data = JSON.parse(e.target.result);
+                const addOrOverwrite = confirm("Do you want to add to existing plants? Click 'Cancel' to overwrite.");
+                if (addOrOverwrite) {
+                    importPlants(data, true);
+                } else {
+                    importPlants(data, false);
+                }
+            };
+            reader.readAsText(file);
+        }
     };
+    fileInput.click();
+});
 
-    plants[index] = updatedPlant;
-    localStorage.setItem('plants', JSON.stringify(plants));
-    closeEditForm();
+function importPlants(plants, add) {
+    if (!add) {
+        localStorage.setItem('plants', JSON.stringify(plants));
+    } else {
+        const existingPlants = JSON.parse(localStorage.getItem('plants')) || [];
+        const newPlants = existingPlants.concat(plants);
+        localStorage.setItem('plants', JSON.stringify(newPlants));
+    }
     renderPlants();
 }
 
-// Function to close the edit form
-function closeEditForm() {
-    const editForm = document.getElementById('edit-plant-form');
-    if (editForm) {
-        editForm.remove();
-    }
+// Function to save plants to file
+function savePlantsToFile() {
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(plants));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "plants.json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
 }
 
 // Function to edit a plant
@@ -145,84 +132,133 @@ function editPlant(index) {
         <button onclick="closeEditForm()">Cancel</button>
     `;
 
-    document.body.appendChild(editForm);
-    updateEditNutrientOptions(index);
+    const plantList = document.getElementById('plants');
+    plantList.appendChild(editForm);
+
+    updateEditNutrientOptions(index, plant.nutrients);
 }
 
-// Function to update nutrient options in the edit form based on the selected nutrient brand
-function updateEditNutrientOptions(index) {
+// Function to save the edited plant
+function savePlant(index) {
     const plants = JSON.parse(localStorage.getItem('plants')) || [];
-    const plant = plants[index];
-    const nutrientBrand = document.getElementById('edit-plant-nutrient-brand').value;
-    const nutrientOptions = document.getElementById('edit-nutrient-options');
-    nutrientOptions.innerHTML = '';
 
-    const nutrientList = {
-        'Fox Farms Trio': ['Big Bloom', 'Grow Big', 'Tiger Bloom'],
-        'General Hydroponics': ['FloraGro', 'FloraBloom', 'FloraMicro'],
-        'Advanced Nutrients': ['Sensi Grow', 'Sensi Bloom', 'Bud Candy'],
-        'Botanicare': ['Pure Blend Pro Grow', 'Pure Blend Pro Bloom', 'Cal-Mag Plus'],
-        'Dyna-Gro': ['Grow', 'Bloom', 'Pro-Tekt'],
-        'Roots Organics': ['Buddha Grow', 'Buddha Bloom', 'Surge']
+    const updatedPlant = {
+        name: document.getElementById('edit-plant-name').value,
+        date: document.getElementById('edit-plant-date').value,
+        growTime: document.getElementById('edit-plant-grow-time').value,
+        waterAmount: document.getElementById('edit-water-amount').value,
+        wateringFrequency: document.getElementById('edit-watering-frequency').value,
+        nutrientBrand: document.getElementById('edit-plant-nutrient-brand').value,
+        nutrients: []
     };
 
-    nutrientList[nutrientBrand].forEach((nutrient, index) => {
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.id = `edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}`;
-        checkbox.name = 'edit-nutrients';
-        checkbox.value = nutrient;
-        checkbox.onchange = () => toggleEditNutrientModifier(nutrient, index);
-
-        const label = document.createElement('label');
-        label.htmlFor = checkbox.id;
-        label.textContent = nutrient;
-
-        nutrientOptions.appendChild(checkbox);
-        nutrientOptions.appendChild(label);
-        nutrientOptions.appendChild(document.createElement('br'));
-    });
-
-    plant.nutrients.forEach(nutrient => {
-        const checkbox = document.getElementById(`edit-plant-${nutrient.name.toLowerCase().replace(/ /g, '-')}`);
-        if (checkbox) {
-            checkbox.checked = true;
-            toggleEditNutrientModifier(nutrient.name, index, nutrient.modifier);
+    document.querySelectorAll('#edit-nutrient-options input[type="checkbox"]').forEach(checkbox => {
+        if (checkbox.checked) {
+            const nutrientName = checkbox.value;
+            const modifierValue = document.getElementById(`edit-plant-${nutrientName.toLowerCase().replace(/ /g, '-')}-modifier`).value;
+            updatedPlant.nutrients.push({
+                name: nutrientName,
+                modifier: modifierValue
+            });
         }
     });
+
+    plants[index] = updatedPlant;
+    localStorage.setItem('plants', JSON.stringify(plants));
+    closeEditForm();
+    renderPlants();
 }
 
-// Function to toggle the nutrient modifier input in the edit form
-function toggleEditNutrientModifier(nutrient, index, modifierValue = '') {
-    const nutrientOptions = document.getElementById('edit-nutrient-options');
-    const existingModifier = document.getElementById(`edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier`);
-
-    if (!existingModifier) {
-        const modifier = document.createElement('input');
-        modifier.type = 'number';
-        modifier.id = `edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier`;
-        modifier.name = 'edit-nutrient-modifier';
-        modifier.placeholder = `${nutrient} Modifier (%)`;
-        modifier.value = modifierValue;
-        modifier.required = true;
-        nutrientOptions.appendChild(modifier);
-    } else {
-        existingModifier.remove();
+// Function to close the edit form
+function closeEditForm() {
+    const editForm = document.getElementById('edit-plant-form');
+    if (editForm) {
+        editForm.remove();
     }
 }
 
+// Function to update nutrient options based on the selected brand
+function updateNutrientOptions() {
+    const brand = document.getElementById('plant-nutrient-brand').value;
+    const options = document.getElementById('nutrient-options');
+    options.innerHTML = '';
+
+    let nutrients = [];
+    if (brand === 'Fox Farms Trio') {
+        nutrients = ['Big Bloom', 'Grow Big', 'Tiger Bloom'];
+    } else if (brand === 'General Hydroponics') {
+        nutrients = ['FloraGro', 'FloraBloom', 'FloraMicro'];
+    } else if (brand === 'Advanced Nutrients') {
+        nutrients = ['Micro', 'Grow', 'Bloom'];
+    } else if (brand === 'Botanicare') {
+        nutrients = ['Pure Blend Pro', 'Liquid Karma', 'Cal-Mag Plus'];
+    } else if (brand === 'Dyna-Gro') {
+        nutrients = ['Foliage-Pro', 'Bloom', 'Protekt'];
+    } else if (brand === 'Roots Organics') {
+        nutrients = ['Buddha Grow', 'Buddha Bloom', 'Trinity'];
+    }
+
+    nutrients.forEach(nutrient => {
+        const nutrientOption = document.createElement('div');
+        nutrientOption.innerHTML = `
+            <label>
+                <input type="checkbox" value="${nutrient}">
+                ${nutrient}
+            </label>
+            <input type="number" id="${nutrient.toLowerCase().replace(/ /g, '-')}-modifier" placeholder="${nutrient} Modifier (%)">
+        `;
+        options.appendChild(nutrientOption);
+    });
+}
+
+// Function to update nutrient options in the edit form
+function updateEditNutrientOptions(index, nutrients = []) {
+    const brand = document.getElementById('edit-plant-nutrient-brand').value;
+    const options = document.getElementById('edit-nutrient-options');
+    options.innerHTML = '';
+
+    let nutrientOptions = [];
+    if (brand === 'Fox Farms Trio') {
+        nutrientOptions = ['Big Bloom', 'Grow Big', 'Tiger Bloom'];
+    } else if (brand === 'General Hydroponics') {
+        nutrientOptions = ['FloraGro', 'FloraBloom', 'FloraMicro'];
+    } else if (brand === 'Advanced Nutrients') {
+        nutrientOptions = ['Micro', 'Grow', 'Bloom'];
+    } else if (brand === 'Botanicare') {
+        nutrientOptions = ['Pure Blend Pro', 'Liquid Karma', 'Cal-Mag Plus'];
+    } else if (brand === 'Dyna-Gro') {
+        nutrientOptions = ['Foliage-Pro', 'Bloom', 'Protekt'];
+    } else if (brand === 'Roots Organics') {
+        nutrientOptions = ['Buddha Grow', 'Buddha Bloom', 'Trinity'];
+    }
+
+    nutrientOptions.forEach(nutrient => {
+        const nutrientOption = document.createElement('div');
+        const isChecked = nutrients.find(n => n.name === nutrient);
+        nutrientOption.innerHTML = `
+            <label>
+                <input type="checkbox" value="${nutrient}" ${isChecked ? 'checked' : ''}>
+                ${nutrient}
+            </label>
+            <input type="number" id="edit-plant-${nutrient.toLowerCase().replace(/ /g, '-')}-modifier" placeholder="${nutrient} Modifier (%)" value="${isChecked ? isChecked.modifier : ''}">
+        `;
+        options.appendChild(nutrientOption);
+    });
+}
+
+// Initialize the app
 document.addEventListener('DOMContentLoaded', function () {
     renderPlants();
+    document.getElementById('plant-nutrient-brand').addEventListener('change', updateNutrientOptions);
+    document.getElementById('save-plants-button').addEventListener('click', savePlantsToFile);
     document.querySelectorAll('.navbar a').forEach(link => {
         link.addEventListener('click', function () {
             document.querySelectorAll('.navbar a').forEach(nav => nav.classList.remove('active'));
             link.classList.add('active');
-            
             const sections = ['new-plant', 'my-plants', 'schedule', 'settings'];
             sections.forEach(section => {
                 document.getElementById(section).style.display = 'none';
             });
-
             const targetSection = link.getAttribute('href').substring(1);
             document.getElementById(targetSection).style.display = 'block';
         });
