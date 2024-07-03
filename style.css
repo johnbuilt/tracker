@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
+    margin: 20px;
     background-color: #f9f9f9;
     color: #333;
 }
@@ -8,24 +8,14 @@ body {
 h1 {
     text-align: center;
     color: #2c3e50;
-    margin: 20px 0;
 }
 
-.content {
-    padding: 20px;
-}
-
-form, .page {
-    display: none;
+form {
     margin-bottom: 20px;
     padding: 20px;
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-form.active, .page.active {
-    display: block;
 }
 
 label {
@@ -61,6 +51,28 @@ button:hover {
     background-color: #34495e;
 }
 
+.nav-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #2c3e50;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.nav-button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.nav-button:hover {
+    color: #f1c40f;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -91,26 +103,4 @@ th input {
     background-color: #fff;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.nav-bar {
-    display: flex;
-    justify-content: space-around;
-    background-color: #2c3e50;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
-}
-
-.nav-button {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.nav-button:hover {
-    color: #ddd;
 }
