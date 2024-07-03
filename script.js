@@ -57,13 +57,47 @@ document.addEventListener('DOMContentLoaded', function () {
                             <p>Big Bloom Modifier: ${plant.bigBloomModifier} %</p>
                             <p>Grow Big Modifier: ${plant.growBigModifier} %</p>
                             <p>Tiger Bloom Modifier: ${plant.tigerBloomModifier} %</p>
+                            <button class="edit-plant" data-index="${index}">Edit</button>
                         </div>
                     </div>
                 </div>
             `;
             plantsList.appendChild(listItem);
         });
+        bindEditButtons();
     }
+
+    function bindEditButtons() {
+        document.querySelectorAll('.edit-plant').forEach(button => {
+            button.addEventListener('click', function () {
+                const index = button.getAttribute('data-index');
+                editPlant(index);
+            });
+        });
+    }
+
+    function editPlant(index) {
+        const plant = plants[index];
+        document.getElementById('plant-name').value = plant.name;
+        document.getElementById('plant-date').value = plant.date;
+        document.getElementById('plant-grow-time').value = plant.growTime;
+        plantForm.setAttribute('data-edit-index', index);
+        document.getElementById('add-plant-button').textContent = 'Save Plant';
+    }
+
+    plantForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const index = plantForm.getAttribute('data-edit-index');
+        if (index !== null) {
+            const plant = plants[index];
+            plant.name = document.getElementById('plant-name').value;
+            plant.date = document.getElementById('plant-date').value;
+            plant.growTime = parseInt(document.getElementById('plant-grow-time').value);
+            updatePlantsList();
+            plantForm.removeAttribute('data-edit-index');
+            document.getElementById('add-plant-button').textContent = 'Add Plant';
+        }
+    });
 
     importButton.addEventListener('change', function (event) {
         const file = event.target.files[0];
