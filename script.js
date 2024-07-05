@@ -6,6 +6,13 @@ document.addEventListener('DOMContentLoaded', function() {
     let plants = JSON.parse(localStorage.getItem('plants')) || [];
     let currentEditingPlantIndex = null;
 
+    function showSection(sectionId) {
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(section => {
+            section.style.display = section.id === sectionId ? 'block' : 'none';
+        });
+    }
+
     function renderPlants() {
         plantsList.innerHTML = '';
         plants.forEach((plant, index) => {
@@ -46,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('plant-name').value = plant.name;
             document.getElementById('plant-date').value = plant.plantingDate;
             document.getElementById('plant-grow-time').value = plant.growTime;
+            showSection('new-plant');
         }
     });
 
@@ -79,4 +87,5 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     renderPlants();
+    showSection('new-plant');
 });
