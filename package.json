@@ -1,15 +1,12 @@
 {
   "name": "tracker",
   "version": "1.0.0",
-  "description": "Cannabis Plant Manager",
-  "main": "index.js",
+  "description": "Cannabis Plant Manager App",
+  "main": "script.js",
   "scripts": {
-    "start": "live-server"
+    "start": "node script.js",
+    "build": "echo 'Build step placeholder'"
   },
-  "dependencies": {
-    "live-server": "^1.2.1"
-  },
-  "devDependencies": {},
-  "author": "",
+  "author": "Your Name",
   "license": "ISC"
 }
