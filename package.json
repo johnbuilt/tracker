@@ -1,12 +1,12 @@
 {
-  "name": "tracker",
+  "name": "your-project-name",
   "version": "1.0.0",
-  "description": "Cannabis Plant Manager App",
-  "main": "script.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node script.js",
-    "build": "echo 'Build step placeholder'"
+    "start": "node index.js",
+    "build": "echo 'No build script defined yet'"
   },
-  "author": "Your Name",
-  "license": "ISC"
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
