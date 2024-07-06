@@ -2,35 +2,32 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+    background-color: #f4f4f4;
 }
 
 header {
     background-color: #4CAF50;
     color: white;
+    padding: 15px 0;
     text-align: center;
-    padding: 10px 0;
 }
 
 main {
-    flex: 1;
     padding: 20px;
 }
 
-.page {
+.hidden {
     display: none;
 }
 
 footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
     background-color: #333;
     color: white;
     text-align: center;
     padding: 10px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
 }
 
 footer nav button {
@@ -39,21 +36,35 @@ footer nav button {
     border: none;
     padding: 10px 20px;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
 
 footer nav button:hover {
-    background-color: #555;
+    background-color: #4CAF50;
 }
 
-footer nav button:focus {
-    outline: none;
+section {
+    display: none;
 }
 
-#edit-plant-form label,
-#edit-plant-form input,
-#edit-plant-form select,
-#edit-plant-form button {
+section.active {
     display: block;
-    margin-bottom: 10px;
+}
+
+.plant {
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
 }
