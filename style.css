@@ -18,6 +18,9 @@ header {
     width: 100%;
     top: 0;
     z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 nav {
@@ -127,5 +130,10 @@ html {
 }
 
 meta[name="viewport"] {
+    content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+}
+
+meta {
+    name: "viewport";
     content: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
 }
