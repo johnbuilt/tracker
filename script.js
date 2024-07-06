@@ -1,141 +1,103 @@
-document.addEventListener("DOMContentLoaded", function () {
-    navigateTo('new-plant'); // Set default page
+document.addEventListener("DOMContentLoaded", () => {
+    navigate('new-plant');
+    loadPlants();
+
+    document.getElementById("new-plant-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        addPlant();
+    });
+
+    document.getElementById("edit-plant-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        savePlant();
+    });
 });
 
-function navigateTo(page) {
-    window.location.hash = page;
-    renderPage(page);
-}
-
-function renderPage(page) {
-    const content = document.getElementById("content");
-    if (page === 'new-plant') {
-        content.innerHTML = `
-            <h2>Add New Plant</h2>
-            <form id="newPlantForm">
-                <label>Plant Name: <input type="text" id="plantName"></label><br>
-                <label>Planting Date: <input type="date" id="plantDate"></label><br>
-                <label>Grow Time (weeks): <input type="number" id="growTime"></label><br>
-                <button type="button" onclick="addPlant()">Add Plant</button>
-            </form>
-        `;
-    } else if (page === 'my-plants') {
-        renderMyPlants();
-    } else if (page === 'schedule') {
-        content.innerHTML = `<h2>Schedule</h2><p>Schedule page content goes here.</p>`;
-    } else if (page === 'settings') {
-        content.innerHTML = `<h2>Settings</h2><p>Settings page content goes here.</p>`;
-    }
+function navigate(page) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.getElementById(page).classList.add("active");
 }
 
 function addPlant() {
-    const name = document.getElementById("plantName").value;
-    const date = document.getElementById("plantDate").value;
-    const time = document.getElementById("growTime").value;
+    const plants = getPlantsFromStorage();
+    const plant = {
+        id: new Date().getTime(),
+        name: document.getElementById("plant-name").value,
+        plantingDate: document.getElementById("planting-date").value,
+        growTime: document.getElementById("grow-time").value
+    };
+    plants.push(plant);
+    localStorage.setItem("plants", JSON.stringify(plants));
+    alert("Plant added successfully!");
+    document.getElementById("new-plant-form").reset();
+    loadPlants();
+}
 
-    if (name && date && time) {
-        const plants = JSON.parse(localStorage.getItem("plants")) || [];
-        plants.push({ name, date, time });
-        localStorage.setItem("plants", JSON.stringify(plants));
-        alert("Plant added successfully!");
-        document.getElementById("newPlantForm").reset();
-    } else {
-        alert("Please fill out all fields.");
+function loadPlants() {
+    const plants = getPlantsFromStorage();
+    const plantsList = document.getElementById("plants-list");
+    plantsList.innerHTML = "";
+    plants.forEach(plant => {
+        const plantDiv = document.createElement("div");
+        plantDiv.classList.add("plant");
+        plantDiv.innerHTML = `
+            <p>${plant.name} (Planted on: ${plant.plantingDate})</p>
+            <p>Grow Time: ${plant.growTime} weeks</p>
+            <p>Watering Amount: ${plant.wateringAmount || "N/A"} oz</p>
+            <p>Watering Frequency: ${plant.wateringFrequency || "N/A"} days</p>
+            <p>Nutrient Brand: ${plant.nutrientBrand || "N/A"}</p>
+            <p>Nutrients: ${plant.nutrients ? plant.nutrients.join(", ") : "N/A"}</p>
+            <button class="edit" onclick="editPlant(${plant.id})">Edit</button>
+            <button onclick="deletePlant(${plant.id})">Delete</button>
+        `;
+        plantsList.appendChild(plantDiv);
+    });
+}
+
+function editPlant(id) {
+    const plants = getPlantsFromStorage();
+    const plant = plants.find(p => p.id === id);
+    if (plant) {
+        document.getElementById("edit-plant-name").value = plant.name;
+        document.getElementById("edit-planting-date").value = plant.plantingDate;
+        document.getElementById("edit-grow-time").value = plant.growTime;
+        document.getElementById("edit-watering-amount").value = plant.wateringAmount || "";
+        document.getElementById("edit-watering-frequency").value = plant.wateringFrequency || "";
+        document.getElementById("edit-nutrient-brand").value = plant.nutrientBrand || "";
+        document.querySelectorAll("#edit-nutrients input[type=checkbox]").forEach(checkbox => {
+            checkbox.checked = plant.nutrients ? plant.nutrients.includes(checkbox.value) : false;
+        });
+        document.getElementById("edit-plant-form").dataset.id = id;
+        navigate('edit-plant');
     }
 }
 
-function renderMyPlants() {
-    const content = document.getElementById("content");
-    const plants = JSON.parse(localStorage.getItem("plants")) || [];
-    content.innerHTML = `
-        <h2>My Plants</h2>
-        <button onclick="importPlants()">Import Plants</button>
-        <button onclick="savePlants()">Save Plants to File</button>
-        <div id="plantsList">
-            ${plants.map((plant, index) => `
-                <div class="plant">
-                    <p>${index + 1} (Planted on: ${plant.date})</p>
-                    <p>Grow Time: ${plant.time} weeks</p>
-                    <button onclick="editPlant(${index})">Edit</button>
-                    <button onclick="deletePlant(${index})">Delete</button>
-                </div>
-            `).join('')}
-        </div>
-    `;
+function savePlant() {
+    const plants = getPlantsFromStorage();
+    const id = parseInt(document.getElementById("edit-plant-form").dataset.id);
+    const plant = plants.find(p => p.id === id);
+    if (plant) {
+        plant.name = document.getElementById("edit-plant-name").value;
+        plant.plantingDate = document.getElementById("edit-planting-date").value;
+        plant.growTime = document.getElementById("edit-grow-time").value;
+        plant.wateringAmount = document.getElementById("edit-watering-amount").value;
+        plant.wateringFrequency = document.getElementById("edit-watering-frequency").value;
+        plant.nutrientBrand = document.getElementById("edit-nutrient-brand").value;
+        plant.nutrients = Array.from(document.querySelectorAll("#edit-nutrients input[type=checkbox]:checked")).map(cb => cb.value);
+        localStorage.setItem("plants", JSON.stringify(plants));
+        alert("Plant updated successfully!");
+        loadPlants();
+        navigate('my-plants');
+    }
 }
 
-function editPlant(index) {
-    const plants = JSON.parse(localStorage.getItem("plants")) || [];
-    const plant = plants[index];
-    const content = document.getElementById("content");
-    content.innerHTML = `
-        <h2>Edit Plant</h2>
-        <form id="editPlantForm">
-            <label>Plant Name: <input type="text" id="editPlantName" value="${plant.name}"></label><br>
-            <label>Planting Date: <input type="date" id="editPlantDate" value="${plant.date}"></label><br>
-            <label>Grow Time (weeks): <input type="number" id="editGrowTime" value="${plant.time}"></label><br>
-            <label>Watering Amount (oz): <input type="number" id="editWateringAmount" value="${plant.wateringAmount || ''}"></label><br>
-            <label>Watering Frequency (days): <input type="number" id="editWateringFrequency" value="${plant.wateringFrequency || ''}"></label><br>
-            <label>Nutrient Brand: 
-                <select id="editNutrientBrand" onchange="updateNutrientOptions()">
-                    <option value="">Select Brand</option>
-                    <option value="Fox Farms" ${plant.nutrientBrand === 'Fox Farms' ? 'selected' : ''}>Fox Farms</option>
-                    <option value="General Hydroponics" ${plant.nutrientBrand === 'General Hydroponics' ? 'selected' : ''}>General Hydroponics</option>
-                    <option value="Advanced Nutrients" ${plant.nutrientBrand === 'Advanced Nutrients' ? 'selected' : ''}>Advanced Nutrients</option>
-                </select>
-            </label><br>
-            <div id="nutrientOptions">
-                <!-- Nutrient options will be rendered here -->
-            </div>
-            <button type="button" onclick="savePlant(${index})">Save</button>
-        </form>
-    `;
-    updateNutrientOptions(plant.nutrients || []);
-}
-
-function savePlant(index) {
-    const plants = JSON.parse(localStorage.getItem("plants")) || [];
-    const plant = plants[index];
-    plant.name = document.getElementById("editPlantName").value;
-    plant.date = document.getElementById("editPlantDate").value;
-    plant.time = document.getElementById("editGrowTime").value;
-    plant.wateringAmount = document.getElementById("editWateringAmount").value;
-    plant.wateringFrequency = document.getElementById("editWateringFrequency").value;
-    plant.nutrientBrand = document.getElementById("editNutrientBrand").value;
-    plant.nutrients = Array.from(document.querySelectorAll('#nutrientOptions input:checked')).map(input => input.value);
+function deletePlant(id) {
+    let plants = getPlantsFromStorage();
+    plants = plants.filter(p => p.id !== id);
     localStorage.setItem("plants", JSON.stringify(plants));
-    alert("Plant updated successfully!");
-    renderMyPlants();
+    loadPlants();
 }
 
-function updateNutrientOptions(selectedNutrients = []) {
-    const brand = document.getElementById("editNutrientBrand").value;
-    const options = {
-        "Fox Farms": ["Big Bloom", "Grow Big", "Tiger Bloom"],
-        "General Hydroponics": ["FloraGro", "FloraBloom", "FloraMicro"],
-        "Advanced Nutrients": ["Grow", "Micro", "Bloom"]
-    };
-    const nutrients = options[brand] || [];
-    const nutrientOptionsDiv = document.getElementById("nutrientOptions");
-    nutrientOptionsDiv.innerHTML = `
-        <label>Nutrients:</label><br>
-        ${nutrients.map(nutrient => `
-            <label><input type="checkbox" value="${nutrient}" ${selectedNutrients.includes(nutrient) ? 'checked' : ''}> ${nutrient}</label><br>
-        `).join('')}
-    `;
-}
-
-function deletePlant(index) {
-    const plants = JSON.parse(localStorage.getItem("plants")) || [];
-    plants.splice(index, 1);
-    localStorage.setItem("plants", JSON.stringify(plants));
-    renderMyPlants();
-}
-
-function importPlants() {
-    // Implement import functionality
-}
-
-function savePlants() {
-    // Implement save functionality
+function getPlantsFromStorage() {
+    return JSON.parse(localStorage.getItem("plants")) || [];
 }
