@@ -2,14 +2,14 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    background-color: #FEFAE0; /* Background color */
+    background-color: #DAD7CD; /* Background color */
     margin: 0;
     padding: 0;
     overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 header {
-    background-color: #283618; /* Dark green color */
+    background-color: #3A5A40; /* Dark green color */
     color: white;
     display: flex;
     justify-content: center;
@@ -30,7 +30,7 @@ nav {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: #283618; /* Dark green color */
+    background-color: #3A5A40; /* Dark green color */
     display: flex;
     justify-content: space-around;
     padding: 0.8em 0; /* Adjusted padding */
@@ -61,14 +61,14 @@ nav a img {
 
 .card {
     background-color: white;
-    border: 1px solid #283618; /* Dark green border color */
+    border: 1px solid #3A5A40; /* Dark green border color */
     border-radius: 10px;
     padding: 1em;
     margin-bottom: 1em;
 }
 
 button {
-    background-color: #BC6C25; /* Button color */
+    background-color: #588157; /* Button color */
     color: white;
     border: none;
     padding: 1em;
@@ -79,14 +79,14 @@ button {
 }
 
 button:hover {
-    background-color: #DDA15E; /* Lighter orange on hover */
+    background-color: #A3B18A; /* Lighter green on hover */
 }
 
 input, select {
     width: 100%;
     padding: 0.5em;
     margin: 0.5em 0 1em 0;
-    border: 1px solid #606C38; /* Green border color */
+    border: 1px solid #3A5A40; /* Dark green border color */
     border-radius: 5px;
     box-sizing: border-box;
 }
@@ -95,7 +95,7 @@ label {
     font-weight: bold;
     display: block;
     margin-bottom: 0.5em;
-    color: #283618; /* Dark green text color */
+    color: #344E41; /* Dark green text color */
 }
 
 footer {
