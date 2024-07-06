@@ -11,6 +11,7 @@ body {
 header {
     background-color: #4CAF50;
     color: white;
+    text-align: center;
     padding: 1em;
     font-size: 1.5em;
     position: fixed;
@@ -20,12 +21,12 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center;
     height: 60px; /* Adjust the height as needed */
 }
 
 h1 {
     margin: 0; /* Remove default margin */
+    font-size: 1.5em; /* Adjust font size as needed */
 }
 
 nav {
