@@ -1,76 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cannabis Plant Manager</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header>
-        <h1>Cannabis Plant Manager</h1>
-    </header>
-    <main>
-        <section id="new-plant" class="page">
-            <h2>Add New Plant</h2>
-            <form id="new-plant-form">
-                <label for="plant-name">Plant Name:</label>
-                <input type="text" id="plant-name" name="plant-name">
-                <label for="planting-date">Planting Date:</label>
-                <input type="date" id="planting-date" name="planting-date">
-                <label for="grow-time">Grow Time (weeks):</label>
-                <input type="number" id="grow-time" name="grow-time">
-                <button type="button" onclick="addPlant()">Add Plant</button>
-            </form>
-        </section>
-        <section id="my-plants" class="page">
-            <h2>My Plants</h2>
-            <button onclick="importPlants()">Import Plants</button>
-            <button onclick="savePlantsToFile()">Save Plants to File</button>
-            <div id="plants-list"></div>
-        </section>
-        <section id="schedule" class="page">
-            <h2>Schedule</h2>
-            <!-- Schedule content here -->
-        </section>
-        <section id="settings" class="page">
-            <h2>Settings</h2>
-            <!-- Settings content here -->
-        </section>
-        <section id="edit-plant" class="page">
-            <h2>Edit Plant</h2>
-            <form id="edit-plant-form">
-                <label for="edit-plant-name">Plant Name:</label>
-                <input type="text" id="edit-plant-name">
-                <label for="edit-planting-date">Planting Date:</label>
-                <input type="date" id="edit-planting-date">
-                <label for="edit-grow-time">Grow Time (weeks):</label>
-                <input type="number" id="edit-grow-time">
-                <label for="edit-watering-amount">Watering Amount (oz):</label>
-                <input type="number" id="edit-watering-amount">
-                <label for="edit-watering-frequency">Watering Frequency (days):</label>
-                <input type="number" id="edit-watering-frequency">
-                <label for="edit-nutrient-brand">Nutrient Brand:</label>
-                <select id="edit-nutrient-brand" onchange="updateNutrients()">
-                    <option value="">Select Brand</option>
-                    <option value="Fox Farms">Fox Farms</option>
-                    <!-- Add more brands as needed -->
-                </select>
-                <div id="edit-nutrients">
-                    <!-- Nutrients checkboxes will be populated here -->
-                </div>
-                <button type="button" onclick="savePlant()">Save</button>
-            </form>
-        </section>
-    </main>
-    <footer>
-        <nav>
-            <button onclick="navigate('new-plant')">New Plant</button>
-            <button onclick="navigate('my-plants')">My Plants</button>
-            <button onclick="navigate('schedule')">Schedule</button>
-            <button onclick="navigate('settings')">Settings</button>
-        </nav>
-    </footer>
-    <script src="script.js"></script>
-</body>
-</html>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+header {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
+
+main {
+    flex: 1;
+    padding: 20px;
+}
+
+.page {
+    display: none;
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+footer nav button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+footer nav button:hover {
+    background-color: #555;
+}
+
+footer nav button:focus {
+    outline: none;
+}
+
+#edit-plant-form label,
+#edit-plant-form input,
+#edit-plant-form select,
+#edit-plant-form button {
+    display: block;
+    margin-bottom: 10px;
+}
