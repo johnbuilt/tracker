@@ -48,11 +48,6 @@ nav a {
     width: 20%; /* Equally divide the space for 5 icons */
 }
 
-nav a img {
-    width: 28px;
-    height: 28px;
-}
-
 .container {
     padding: 2em;
     padding-top: 8em; /* Ensure enough space for the fixed larger header */
