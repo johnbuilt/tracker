@@ -21,21 +21,27 @@ nav {
     background-color: #4CAF50;
     display: flex;
     justify-content: space-around;
-    padding: 0.5em 0;
+    padding: 1em 0; /* Increased padding */
+    height: 60px; /* Adjusted height */
+    font-size: 1.4em; /* Increased font size */
 }
 
 nav a {
     color: white;
     text-decoration: none;
-    font-size: 1.2em;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
+nav a img {
+    width: 28px; /* Increased icon size */
+    height: 28px; /* Increased icon size */
+}
+
 .container {
     padding: 2em;
-    padding-bottom: 6em; /* Ensure enough space for the navigation bar */
+    padding-bottom: 7em; /* Ensure enough space for the larger navigation bar */
 }
 
 .card {
@@ -77,10 +83,10 @@ label {
 }
 
 footer {
-    height: 60px; /* Adjust to ensure enough space for the save button */
+    height: 70px; /* Adjusted to ensure enough space for the save button */
 }
 
 /* Ensure the button is not obscured */
 .edit-container {
-    padding-bottom: 100px; /* Adjust to ensure the save button is clickable */
+    padding-bottom: 100px; /* Ensure the save button is clickable */
 }
