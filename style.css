@@ -1,69 +1,57 @@
 /* style.css */
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #DAD7CD; /* Background color */
+    font-family: 'Nunito', sans-serif;
+    background-color: #DAD7CD;
     margin: 0;
     padding: 0;
-    overflow-x: hidden; /* Prevent horizontal scroll */
 }
 
 header {
-    background-color: #3A5A40; /* Dark green color */
+    background-color: #606C38;
     color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 80px; /* Adjust the height to make the header bigger */
-    width: 100%;
-    position: fixed;
-    top: 0;
-    z-index: 1;
-}
-
-header h1 {
-    font-size: 2em; /* Adjust font size as needed */
-    margin: 0; /* Remove default margin */
+    text-align: center;
+    padding: 1em;
 }
 
 nav {
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: #3A5A40; /* Dark green color */
+    background-color: #283618;
     display: flex;
     justify-content: space-around;
-    padding: 0.8em 0; /* Adjusted padding */
-    height: 55px; /* Adjusted height */
-    font-size: 1.4em;
-    z-index: 1;
+    padding: 0.5em 0;
 }
 
 nav a {
     color: white;
     text-decoration: none;
+    font-size: 1.2em;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 20%; /* Equally divide the space for 5 icons */
+}
+
+nav a span {
+    font-size: 0.75em;
 }
 
 .container {
     padding: 2em;
-    padding-top: 8em; /* Ensure enough space for the fixed larger header */
-    padding-bottom: 7em; /* Ensure enough space for the larger navigation bar */
+    padding-bottom: 6em; /* Ensure enough space for the navigation bar */
 }
 
 .card {
     background-color: white;
-    border: 1px solid #3A5A40; /* Dark green border color */
+    border: 1px solid #ddd;
     border-radius: 10px;
     padding: 1em;
     margin-bottom: 1em;
 }
 
 button {
-    background-color: #588157; /* Button color */
+    background-color: #606C38;
     color: white;
     border: none;
     padding: 1em;
@@ -74,14 +62,14 @@ button {
 }
 
 button:hover {
-    background-color: #A3B18A; /* Lighter green on hover */
+    background-color: #283618;
 }
 
 input, select {
     width: 100%;
     padding: 0.5em;
     margin: 0.5em 0 1em 0;
-    border: 1px solid #3A5A40; /* Dark green border color */
+    border: 1px solid #ddd;
     border-radius: 5px;
     box-sizing: border-box;
 }
@@ -90,40 +78,22 @@ label {
     font-weight: bold;
     display: block;
     margin-bottom: 0.5em;
-    color: #344E41; /* Dark green text color */
 }
 
 footer {
-    height: 70px; /* Adjusted to ensure enough space for the save button */
+    height: 60px; /* Adjust to ensure enough space for the save button */
 }
 
 /* Ensure the button is not obscured */
 .edit-container {
-    padding-bottom: 100px; /* Ensure the save button is clickable */
+    padding-bottom: 100px; /* Adjust to ensure the save button is clickable */
 }
 
-/* Prevent zooming */
-body, input, select, button {
-    touch-action: manipulation;
-    user-select: none;
+#calendar {
+    max-width: 100%;
+    margin: 0 auto;
 }
 
-input[type="text"], input[type="number"], select {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-
-input:focus, select:focus, button:focus {
-    outline: none;
-}
-
-html {
-    touch-action: manipulation;
-    -ms-touch-action: manipulation;
-    -webkit-touch-action: manipulation;
-    -moz-touch-action: manipulation;
-    -webkit-user-drag: none;
-    user-drag: none;
+.fc {
+    max-width: 100%;
 }
