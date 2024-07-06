@@ -1,111 +1,81 @@
-document.addEventListener("DOMContentLoaded", () => {
-    navigate("new-plant");
-    loadPlants();
-});
-
-function navigate(pageId) {
-    document.querySelectorAll(".page").forEach(page => {
-        page.style.display = "none";
-    });
-    document.getElementById(pageId).style.display = "block";
-}
+let plants = [];
+let editingPlantIndex = null;
 
 function addPlant() {
     const name = document.getElementById("plant-name").value;
-    const plantingDate = document.getElementById("planting-date").value;
+    const date = document.getElementById("plant-date").value;
     const growTime = document.getElementById("grow-time").value;
 
-    if (name && plantingDate && growTime) {
-        const plants = getPlantsFromStorage();
-        const newPlant = {
-            id: plants.length ? plants[plants.length - 1].id + 1 : 1,
-            name,
-            plantingDate,
-            growTime
-        };
-        plants.push(newPlant);
-        localStorage.setItem("plants", JSON.stringify(plants));
+    if (name && date && growTime) {
+        plants.push({ name, date, growTime });
         alert("Plant added successfully!");
-        document.getElementById("new-plant-form").reset();
+        document.getElementById("plant-name").value = "";
+        document.getElementById("plant-date").value = "";
+        document.getElementById("grow-time").value = "";
+        displayPlants();
     } else {
-        alert("Please fill out all fields.");
+        alert("Please fill all fields.");
     }
 }
 
-function loadPlants() {
-    const plants = getPlantsFromStorage();
+function displayPlants() {
     const plantsList = document.getElementById("plants-list");
     plantsList.innerHTML = "";
-
-    plants.forEach(plant => {
+    plants.forEach((plant, index) => {
         const plantDiv = document.createElement("div");
-        plantDiv.classList.add("plant");
+        plantDiv.className = "plant";
         plantDiv.innerHTML = `
-            <p>${plant.name} (Planted on: ${plant.plantingDate})</p>
+            <p>${plant.name} (Planted on: ${plant.date})</p>
             <p>Grow Time: ${plant.growTime} weeks</p>
-            <button onclick="editPlant(${plant.id})">Edit</button>
-            <button onclick="deletePlant(${plant.id})">Delete</button>
+            <button onclick="editPlant(${index})">Edit</button>
+            <button onclick="deletePlant(${index})">Delete</button>
         `;
         plantsList.appendChild(plantDiv);
     });
 }
 
-function editPlant(id) {
-    const plants = getPlantsFromStorage();
-    const plant = plants.find(p => p.id === id);
-
-    if (plant) {
-        document.getElementById("edit-plant-name").value = plant.name;
-        document.getElementById("edit-planting-date").value = plant.plantingDate;
-        document.getElementById("edit-grow-time").value = plant.growTime;
-        document.getElementById("edit-watering-amount").value = plant.wateringAmount || "";
-        document.getElementById("edit-watering-frequency").value = plant.wateringFrequency || "";
-        document.getElementById("edit-nutrient-brand").value = plant.nutrientBrand || "";
-        document.querySelectorAll("#edit-nutrients input[type=checkbox]").forEach(checkbox => {
-            checkbox.checked = plant.nutrients ? plant.nutrients.includes(checkbox.value) : false;
-        });
-        document.getElementById("edit-plant-form").dataset.id = id;
-        navigate('edit-plant');
-    }
+function editPlant(index) {
+    editingPlantIndex = index;
+    const plant = plants[index];
+    document.getElementById("edit-plant-name").value = plant.name;
+    document.getElementById("edit-plant-date").value = plant.date;
+    document.getElementById("edit-grow-time").value = plant.growTime;
+    document.getElementById("edit-watering-amount").value = plant.wateringAmount || '';
+    document.getElementById("edit-watering-frequency").value = plant.wateringFrequency || '';
+    document.getElementById("edit-nutrient-brand").value = plant.nutrientBrand || '';
+    showSection('edit-plant');
 }
 
 function savePlant() {
-    const plants = getPlantsFromStorage();
-    const id = parseInt(document.getElementById("edit-plant-form").dataset.id);
-    const plant = plants.find(p => p.id === id);
+    const name = document.getElementById("edit-plant-name").value;
+    const date = document.getElementById("edit-plant-date").value;
+    const growTime = document.getElementById("edit-grow-time").value;
+    const wateringAmount = document.getElementById("edit-watering-amount").value;
+    const wateringFrequency = document.getElementById("edit-watering-frequency").value;
+    const nutrientBrand = document.getElementById("edit-nutrient-brand").value;
 
-    if (plant) {
-        plant.name = document.getElementById("edit-plant-name").value;
-        plant.plantingDate = document.getElementById("edit-planting-date").value;
-        plant.growTime = document.getElementById("edit-grow-time").value;
-        plant.wateringAmount = document.getElementById("edit-watering-amount").value;
-        plant.wateringFrequency = document.getElementById("edit-watering-frequency").value;
-        plant.nutrientBrand = document.getElementById("edit-nutrient-brand").value;
-        plant.nutrients = Array.from(document.querySelectorAll("#edit-nutrients input[type=checkbox]:checked")).map(cb => cb.value);
-        localStorage.setItem("plants", JSON.stringify(plants));
+    if (name && date && growTime && wateringAmount && wateringFrequency && nutrientBrand) {
+        plants[editingPlantIndex] = { name, date, growTime, wateringAmount, wateringFrequency, nutrientBrand };
         alert("Plant updated successfully!");
-        loadPlants();
-        navigate('my-plants');
+        showSection('my-plants');
+        displayPlants();
+    } else {
+        alert("Please fill all fields.");
     }
 }
 
-function deletePlant(id) {
-    let plants = getPlantsFromStorage();
-    plants = plants.filter(p => p.id !== id);
-    localStorage.setItem("plants", JSON.stringify(plants));
-    loadPlants();
+function deletePlant(index) {
+    if (confirm("Are you sure you want to delete this plant?")) {
+        plants.splice(index, 1);
+        displayPlants();
+    }
 }
 
-function getPlantsFromStorage() {
-    return JSON.parse(localStorage.getItem("plants")) || [];
-}
-
-function importPlants() {
-    // Implement import plants functionality here
-}
-
-function savePlantsToFile() {
-    // Implement save plants to file functionality here
+function showSection(sectionId) {
+    document.querySelectorAll("main > section").forEach(section => {
+        section.classList.add("hidden");
+    });
+    document.getElementById(sectionId).classList.remove("hidden");
 }
 
 function updateNutrients() {
@@ -123,5 +93,4 @@ function updateNutrients() {
             nutrientsDiv.appendChild(document.createElement("br"));
         });
     }
-    // Add more brands and nutrients as needed
 }
