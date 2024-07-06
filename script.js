@@ -1,104 +1,56 @@
-document.getElementById('plant-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const name = document.getElementById('plant-name').value;
-    const date = document.getElementById('plant-date').value;
-    const growTime = document.getElementById('plant-grow-time').value;
-    addPlant(name, date, growTime);
-    document.getElementById('plant-form').reset();
-});
+document.addEventListener("DOMContentLoaded", function () {
+    let plants = JSON.parse(localStorage.getItem("plants")) || [];
+    const plantForm = document.getElementById("plant-form");
+    const plantNameInput = document.getElementById("plant-name");
+    const plantDateInput = document.getElementById("plant-date");
+    const plantGrowTimeInput = document.getElementById("plant-grow-time");
+    const plantsDiv = document.getElementById("plants");
 
-function addPlant(name, date, growTime) {
-    const plant = { name, date, growTime };
-    let plants = JSON.parse(localStorage.getItem('plants')) || [];
-    plants.push(plant);
-    localStorage.setItem('plants', JSON.stringify(plants));
-    displayPlants();
-}
+    function displayPlants() {
+        plantsDiv.innerHTML = "";
+        plants.forEach((plant, index) => {
+            const plantItem = document.createElement("div");
+            plantItem.classList.add("plant-item");
+            plantItem.innerHTML = `
+                <p>${plant.name} (Planted on: ${plant.date})</p>
+                <p>Grow Time: ${plant.growTime} weeks</p>
+                <button onclick="editPlant(${index})">Edit</button>
+                <button onclick="deletePlant(${index})">Delete</button>
+            `;
+            plantsDiv.appendChild(plantItem);
+        });
+    }
 
-function displayPlants() {
-    const plants = JSON.parse(localStorage.getItem('plants')) || [];
-    const plantsDiv = document.getElementById('plants');
-    plantsDiv.innerHTML = '';
-    plants.forEach((plant, index) => {
-        const plantDiv = document.createElement('div');
-        plantDiv.className = 'plant-item';
-        plantDiv.innerHTML = `
-            <p>${plant.name} (Planted on: ${plant.date})</p>
-            <p>Grow Time: ${plant.growTime} weeks</p>
-            <button onclick="editPlant(${index})">Edit</button>
-            <button onclick="deletePlant(${index})">Delete</button>
-        `;
-        plantsDiv.appendChild(plantDiv);
-    });
-}
-
-function editPlant(index) {
-    const plants = JSON.parse(localStorage.getItem('plants')) || [];
-    const plant = plants[index];
-    document.getElementById('plant-name').value = plant.name;
-    document.getElementById('plant-date').value = plant.date;
-    document.getElementById('plant-grow-time').value = plant.growTime;
-    document.getElementById('plant-form').onsubmit = function (e) {
+    function addPlant(e) {
         e.preventDefault();
-        plant.name = document.getElementById('plant-name').value;
-        plant.date = document.getElementById('plant-date').value;
-        plant.growTime = document.getElementById('plant-grow-time').value;
-        plants[index] = plant;
-        localStorage.setItem('plants', JSON.stringify(plants));
-        document.getElementById('plant-form').reset();
-        document.getElementById('plant-form').onsubmit = addPlantSubmitHandler;
+        const newPlant = {
+            name: plantNameInput.value,
+            date: plantDateInput.value,
+            growTime: plantGrowTimeInput.value
+        };
+        plants.push(newPlant);
+        localStorage.setItem("plants", JSON.stringify(plants));
+        displayPlants();
+        plantForm.reset();
+        alert("Plant added successfully!");
+    }
+
+    plantForm.addEventListener("submit", addPlant);
+
+    window.editPlant = function (index) {
+        const plant = plants[index];
+        plantNameInput.value = plant.name;
+        plantDateInput.value = plant.date;
+        plantGrowTimeInput.value = plant.growTime;
+        plants.splice(index, 1);
         displayPlants();
     };
-}
 
-function deletePlant(index) {
-    let plants = JSON.parse(localStorage.getItem('plants')) || [];
-    plants.splice(index, 1);
-    localStorage.setItem('plants', JSON.stringify(plants));
+    window.deletePlant = function (index) {
+        plants.splice(index, 1);
+        localStorage.setItem("plants", JSON.stringify(plants));
+        displayPlants();
+    };
+
     displayPlants();
-}
-
-function showSection(sectionId) {
-    const sections = document.querySelectorAll('.content-section');
-    sections.forEach(section => {
-        section.style.display = 'none';
-    });
-    document.getElementById(sectionId).style.display = 'block';
-}
-
-document.getElementById('import-plants-button').addEventListener('click', function () {
-    document.getElementById('import-plants-file').click();
 });
-
-document.getElementById('import-plants-file').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onload = function (event) {
-        const plants = JSON.parse(event.target.result);
-        localStorage.setItem('plants', JSON.stringify(plants));
-        displayPlants();
-    };
-    reader.readAsText(file);
-});
-
-document.getElementById('save-plants-button').addEventListener('click', function () {
-    const plants = JSON.parse(localStorage.getItem('plants')) || [];
-    const blob = new Blob([JSON.stringify(plants, null, 2)], { type: 'application/json' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'plants.json';
-    link.click();
-});
-
-function addPlantSubmitHandler(e) {
-    e.preventDefault();
-    const name = document.getElementById('plant-name').value;
-    const date = document.getElementById('plant-date').value;
-    const growTime = document.getElementById('plant-grow-time').value;
-    addPlant(name, date, growTime);
-    document.getElementById('plant-form').reset();
-}
-
-document.getElementById('plant-form').onsubmit = addPlantSubmitHandler;
-
-displayPlants();
