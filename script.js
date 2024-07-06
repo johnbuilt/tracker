@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <input type="date" id="date-planted" name="date-planted">
                 <button type="submit">Add Plant</button>
             </form>
+            <div id="confirmation-message" style="display:none;">Plant added successfully!</div>
         `;
 
         document.getElementById('add-plant-form').addEventListener('submit', addPlant);
@@ -71,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const plantName = document.getElementById('plant-name').value;
         const growTime = document.getElementById('grow-time').value;
         const datePlanted = document.getElementById('date-planted').value;
-        
+
         const plant = {
             name: plantName,
             growTime: growTime,
@@ -85,7 +86,20 @@ document.addEventListener('DOMContentLoaded', () => {
         let plants = JSON.parse(localStorage.getItem('plants')) || [];
         plants.push(plant);
         localStorage.setItem('plants', JSON.stringify(plants));
-        loadMyPlantsScreen();
+        
+        // Show confirmation message
+        showConfirmation();
+
+        // Reset form
+        document.getElementById('add-plant-form').reset();
+    }
+
+    function showConfirmation() {
+        const confirmationMessage = document.getElementById('confirmation-message');
+        confirmationMessage.style.display = 'block';
+        setTimeout(() => {
+            confirmationMessage.style.display = 'none';
+        }, 3000);
     }
 
     function displayPlants() {
