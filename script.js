@@ -6,6 +6,24 @@ document.addEventListener("DOMContentLoaded", function () {
     const plantGrowTimeInput = document.getElementById("plant-grow-time");
     const plantsDiv = document.getElementById("plants");
 
+    const pages = {
+        "#new-plant": document.getElementById("new-plant"),
+        "#my-plants": document.getElementById("my-plants"),
+        "#schedule": document.getElementById("schedule"),
+        "#settings": document.getElementById("settings")
+    };
+
+    function navigateTo(hash) {
+        Object.keys(pages).forEach(page => {
+            pages[page].style.display = "none";
+        });
+        if (pages[hash]) {
+            pages[hash].style.display = "block";
+        } else {
+            pages["#new-plant"].style.display = "block";
+        }
+    }
+
     function displayPlants() {
         plantsDiv.innerHTML = "";
         plants.forEach((plant, index) => {
@@ -52,5 +70,10 @@ document.addEventListener("DOMContentLoaded", function () {
         displayPlants();
     };
 
+    window.addEventListener("hashchange", function () {
+        navigateTo(location.hash);
+    });
+
+    navigateTo(location.hash);
     displayPlants();
 });
