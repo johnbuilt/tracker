@@ -1,21 +1,20 @@
 {
-  "name": "Cannabis Plant Manager",
-  "short_name": "Plant Manager",
-  "description": "Manage your cannabis plants with ease.",
-  "start_url": "/tracker/index.html",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#4CAF50",
+  "short_name": "OptiGrow",
+  "name": "OptiGrow",
   "icons": [
     {
-      "src": "icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "/path/to/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
     },
     {
-      "src": "icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "/path/to/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
-  ]
+  ],
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50"
 }
