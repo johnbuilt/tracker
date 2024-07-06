@@ -2,69 +2,73 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    box-sizing: border-box;
 }
 
 header {
     background-color: #4CAF50;
     color: white;
-    padding: 15px 0;
     text-align: center;
+    padding: 1em;
 }
 
 main {
-    padding: 20px;
-}
-
-.hidden {
-    display: none;
+    padding: 1em;
 }
 
 footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+    padding: 1em;
 }
 
-footer nav button {
-    background-color: #333;
-    color: white;
+nav button {
+    background: none;
     border: none;
-    padding: 10px 20px;
+    color: white;
+    padding: 0.5em 1em;
     cursor: pointer;
 }
 
-footer nav button:hover {
-    background-color: #4CAF50;
+nav button:hover {
+    background-color: #555;
 }
 
-section {
-    display: none;
+form {
+    display: flex;
+    flex-direction: column;
 }
 
-section.active {
-    display: block;
+form label {
+    margin-top: 0.5em;
+}
+
+form input, form select, form button {
+    margin-top: 0.5em;
+    padding: 0.5em;
+    font-size: 1em;
 }
 
 .plant {
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px 0;
+    border: 1px solid #ddd;
+    padding: 1em;
+    margin-top: 1em;
 }
 
-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px;
-    cursor: pointer;
+.plant h3 {
+    margin: 0;
 }
 
-button:hover {
-    background-color: #45a049;
+.plant p {
+    margin: 0.5em 0;
+}
+
+.plant button {
+    margin-right: 0.5em;
+    padding: 0.5em 1em;
+    font-size: 1em;
 }
