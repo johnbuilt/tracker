@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const settingsSection = document.getElementById("settings");
 
     function showSection(section) {
-        console.log("Showing section:", section.id);
         newPlantSection.style.display = "none";
         myPlantsSection.style.display = "none";
         scheduleSection.style.display = "none";
@@ -42,7 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
             id: Date.now(),
             name: plantName,
             date: plantDate,
-            growTime: plantGrowTime
+            growTime: plantGrowTime,
+            wateringAmount: '',
+            wateringFrequency: '',
+            nutrientBrand: '',
+            nutrients: []
         };
 
         addPlant(plant);
@@ -88,8 +91,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function showEditForm(plant) {
-        const plantDiv = document.createElement("div");
-        plantDiv.className = "plant-edit-form";
+        const editFormDiv = document.createElement("div");
+        editFormDiv.className = "plant-edit-form";
 
         const editForm = document.createElement("form");
         editForm.className = "edit-form";
@@ -109,6 +112,35 @@ document.addEventListener("DOMContentLoaded", function () {
         growTimeInput.value = plant.growTime;
         editForm.appendChild(growTimeInput);
 
+        const wateringAmountInput = document.createElement("input");
+        wateringAmountInput.type = "number";
+        wateringAmountInput.placeholder = "Watering amount (in oz)";
+        wateringAmountInput.value = plant.wateringAmount;
+        editForm.appendChild(wateringAmountInput);
+
+        const wateringFrequencyInput = document.createElement("input");
+        wateringFrequencyInput.type = "number";
+        wateringFrequencyInput.placeholder = "Watering frequency (days)";
+        wateringFrequencyInput.value = plant.wateringFrequency;
+        editForm.appendChild(wateringFrequencyInput);
+
+        const nutrientBrandSelect = document.createElement("select");
+        nutrientBrandSelect.innerHTML = `
+            <option value="">Select Nutrient Brand</option>
+            <option value="Fox Farms">Fox Farms</option>
+            <option value="Advanced Nutrients">Advanced Nutrients</option>
+            <option value="General Hydroponics">General Hydroponics</option>
+        `;
+        nutrientBrandSelect.value = plant.nutrientBrand;
+        nutrientBrandSelect.addEventListener("change", function () {
+            showNutrients(nutrientBrandSelect.value, plant);
+        });
+        editForm.appendChild(nutrientBrandSelect);
+
+        const nutrientsDiv = document.createElement("div");
+        nutrientsDiv.id = "nutrients-div";
+        editForm.appendChild(nutrientsDiv);
+
         const saveButton = document.createElement("button");
         saveButton.type = "submit";
         saveButton.innerText = "Save";
@@ -119,14 +151,47 @@ document.addEventListener("DOMContentLoaded", function () {
             plant.name = nameInput.value;
             plant.date = dateInput.value;
             plant.growTime = growTimeInput.value;
+            plant.wateringAmount = wateringAmountInput.value;
+            plant.wateringFrequency = wateringFrequencyInput.value;
+            plant.nutrientBrand = nutrientBrandSelect.value;
+            plant.nutrients = Array.from(document.querySelectorAll("#nutrients-div input:checked")).map(input => input.value);
             savePlant(plant);
         });
 
-        plantDiv.appendChild(editForm);
+        editFormDiv.appendChild(editForm);
 
         const plantsDiv = document.getElementById("plants");
         plantsDiv.innerHTML = "";
-        plantsDiv.appendChild(plantDiv);
+        plantsDiv.appendChild(editFormDiv);
+
+        showNutrients(plant.nutrientBrand, plant);
+    }
+
+    function showNutrients(brand, plant) {
+        const nutrientsDiv = document.getElementById("nutrients-div");
+        nutrientsDiv.innerHTML = "";
+
+        let nutrients = [];
+        if (brand === "Fox Farms") {
+            nutrients = ["Big Bloom", "Tiger Bloom", "Grow Big"];
+        } else if (brand === "Advanced Nutrients") {
+            nutrients = ["Micro", "Grow", "Bloom"];
+        } else if (brand === "General Hydroponics") {
+            nutrients = ["FloraMicro", "FloraGro", "FloraBloom"];
+        }
+
+        nutrients.forEach(nutrient => {
+            const nutrientLabel = document.createElement("label");
+            const nutrientCheckbox = document.createElement("input");
+            nutrientCheckbox.type = "checkbox";
+            nutrientCheckbox.value = nutrient;
+            if (plant.nutrients.includes(nutrient)) {
+                nutrientCheckbox.checked = true;
+            }
+            nutrientLabel.appendChild(nutrientCheckbox);
+            nutrientLabel.appendChild(document.createTextNode(nutrient));
+            nutrientsDiv.appendChild(nutrientLabel);
+        });
     }
 
     function savePlant(updatedPlant) {
