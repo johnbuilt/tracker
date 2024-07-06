@@ -33,7 +33,22 @@ function displayPlants() {
 }
 
 function editPlant(index) {
-    // Function to edit plant details
+    const plants = JSON.parse(localStorage.getItem('plants')) || [];
+    const plant = plants[index];
+    document.getElementById('plant-name').value = plant.name;
+    document.getElementById('plant-date').value = plant.date;
+    document.getElementById('plant-grow-time').value = plant.growTime;
+    document.getElementById('plant-form').onsubmit = function (e) {
+        e.preventDefault();
+        plant.name = document.getElementById('plant-name').value;
+        plant.date = document.getElementById('plant-date').value;
+        plant.growTime = document.getElementById('plant-grow-time').value;
+        plants[index] = plant;
+        localStorage.setItem('plants', JSON.stringify(plants));
+        document.getElementById('plant-form').reset();
+        document.getElementById('plant-form').onsubmit = addPlantSubmitHandler;
+        displayPlants();
+    };
 }
 
 function deletePlant(index) {
@@ -52,7 +67,18 @@ function showSection(sectionId) {
 }
 
 document.getElementById('import-plants-button').addEventListener('click', function () {
-    // Function to import plants from a file
+    document.getElementById('import-plants-file').click();
+});
+
+document.getElementById('import-plants-file').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const plants = JSON.parse(event.target.result);
+        localStorage.setItem('plants', JSON.stringify(plants));
+        displayPlants();
+    };
+    reader.readAsText(file);
 });
 
 document.getElementById('save-plants-button').addEventListener('click', function () {
@@ -63,5 +89,16 @@ document.getElementById('save-plants-button').addEventListener('click', function
     link.download = 'plants.json';
     link.click();
 });
+
+function addPlantSubmitHandler(e) {
+    e.preventDefault();
+    const name = document.getElementById('plant-name').value;
+    const date = document.getElementById('plant-date').value;
+    const growTime = document.getElementById('plant-grow-time').value;
+    addPlant(name, date, growTime);
+    document.getElementById('plant-form').reset();
+}
+
+document.getElementById('plant-form').onsubmit = addPlantSubmitHandler;
 
 displayPlants();
