@@ -7,42 +7,55 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="new-plant" class="content-section">
-        <h1>Add New Plant</h1>
-        <form id="plant-form">
-            <label for="plant-name">Plant Name:</label>
-            <input type="text" id="plant-name" required>
-            <label for="plant-date">Planting Date:</label>
-            <input type="date" id="plant-date" required>
-            <label for="plant-grow-time">Grow Time (weeks):</label>
-            <input type="number" id="plant-grow-time" required>
-            <button type="submit">Add Plant</button>
-        </form>
-    </div>
+    <header>
+        <h1>Cannabis Plant Manager</h1>
+    </header>
 
-    <div id="my-plants" class="content-section" style="display: none;">
-        <h1>My Plants</h1>
-        <button id="import-plants-button">Import Plants</button>
-        <button id="save-plants-button">Save Plants to File</button>
-        <div id="plants"></div>
-    </div>
+    <main>
+        <!-- New Plant Section -->
+        <div id="new-plant" class="content-section">
+            <h2>Add New Plant</h2>
+            <form id="plant-form">
+                <label for="plant-name">Plant Name:</label>
+                <input type="text" id="plant-name" required>
 
-    <div id="schedule" class="content-section" style="display: none;">
-        <h1>Schedule</h1>
-        <div id="schedule-content">Schedule content goes here...</div>
-    </div>
+                <label for="plant-date">Planting Date:</label>
+                <input type="date" id="plant-date" required>
 
-    <div id="settings" class="content-section" style="display: none;">
-        <h1>Settings</h1>
-        <div id="settings-content">Settings content goes here...</div>
-    </div>
+                <label for="plant-grow-time">Grow Time (weeks):</label>
+                <input type="number" id="plant-grow-time" required>
 
-    <nav class="navbar">
-        <button onclick="location.hash='#new-plant'">New Plant</button>
-        <button onclick="location.hash='#my-plants'">My Plants</button>
-        <button onclick="location.hash='#schedule'">Schedule</button>
-        <button onclick="location.hash='#settings'">Settings</button>
-    </nav>
+                <button type="submit">Add Plant</button>
+            </form>
+        </div>
+
+        <!-- My Plants Section -->
+        <div id="my-plants" class="content-section" style="display: none;">
+            <h2>My Plants</h2>
+            <button id="import-plants-button">Import Plants</button>
+            <button id="save-plants-button">Save Plants to File</button>
+            <div id="plants"></div>
+        </div>
+
+        <!-- Schedule Section -->
+        <div id="schedule" class="content-section" style="display: none;">
+            <h2>Schedule</h2>
+            <!-- Schedule content goes here -->
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings" class="content-section" style="display: none;">
+            <h2>Settings</h2>
+            <!-- Settings content goes here -->
+        </div>
+    </main>
+
+    <div class="navbar">
+        <button id="new-plant-button">New Plant</button>
+        <button id="my-plants-button">My Plants</button>
+        <button id="schedule-button">Schedule</button>
+        <button id="settings-button">Settings</button>
+    </div>
 
     <script src="script.js"></script>
 </body>
