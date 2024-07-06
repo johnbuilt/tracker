@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const settingsSection = document.getElementById("settings");
 
     function showSection(section) {
+        console.log("Showing section:", section.id);
         newPlantSection.style.display = "none";
         myPlantsSection.style.display = "none";
         scheduleSection.style.display = "none";
