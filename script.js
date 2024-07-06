@@ -30,10 +30,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const plantItem = document.createElement("div");
             plantItem.classList.add("plant-item");
             plantItem.innerHTML = `
-                <p>${plant.name} (Planted on: ${plant.date})</p>
-                <p>Grow Time: ${plant.growTime} weeks</p>
-                <button onclick="editPlant(${index})">Edit</button>
-                <button onclick="deletePlant(${index})">Delete</button>
+                <div>
+                    <p>${plant.name} (Planted on: ${plant.date})</p>
+                    <p>Grow Time: ${plant.growTime} weeks</p>
+                </div>
+                <div>
+                    <button onclick="editPlant(${index})">Edit</button>
+                    <button onclick="deletePlant(${index})">Delete</button>
+                </div>
             `;
             plantsDiv.appendChild(plantItem);
         });
