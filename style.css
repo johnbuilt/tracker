@@ -12,7 +12,8 @@ header {
     background-color: #4CAF50;
     color: white;
     text-align: center;
-    padding: 1em;
+    padding: 1.5em; /* Increase padding for a larger header */
+    font-size: 1.5em; /* Increase font size */
     position: fixed;
     width: 100%;
     top: 0;
@@ -48,7 +49,7 @@ nav a img {
 
 .container {
     padding: 2em;
-    padding-top: 4em; /* Ensure enough space for the fixed header */
+    padding-top: 6em; /* Ensure enough space for the fixed larger header */
     padding-bottom: 7em; /* Ensure enough space for the larger navigation bar */
 }
 
