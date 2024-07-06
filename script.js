@@ -1,99 +1,115 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const plantForm = document.getElementById('plant-form');
-    const editPlantForm = document.getElementById('edit-plant-form');
-    const plantsList = document.getElementById('plants-list');
-    let plants = JSON.parse(localStorage.getItem('plants')) || [];
-    let editPlantIndex = null;
+document.addEventListener("DOMContentLoaded", function() {
+    const addPlantForm = document.getElementById("addPlantForm");
+    const editPlantForm = document.getElementById("editPlantForm");
+    const plantsList = document.getElementById("plantsList");
+    const newPlantSection = document.getElementById("new-plant");
+    const myPlantsSection = document.getElementById("my-plants");
+    const editPlantSection = document.getElementById("edit-plant");
 
-    plantForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = plantForm['plant-name'].value;
-        const date = plantForm['plant-date'].value;
-        const time = plantForm['plant-time'].value;
+    let plants = [];
+    let currentPlantIndex = null;
 
-        plants.push({ name, date, time });
-        localStorage.setItem('plants', JSON.stringify(plants));
-        plantForm.reset();
-        alert('Plant added successfully!');
+    addPlantForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const plant = {
+            name: event.target.plantName.value,
+            plantingDate: event.target.plantingDate.value,
+            growTime: event.target.growTime.value,
+            wateringAmount: "",
+            wateringFrequency: "",
+            nutrientBrand: "",
+            nutrients: []
+        };
+        plants.push(plant);
+        event.target.reset();
         displayPlants();
+        alert("Plant added successfully!");
     });
 
-    editPlantForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = editPlantForm['edit-plant-name'].value;
-        const date = editPlantForm['edit-plant-date'].value;
-        const time = editPlantForm['edit-plant-time'].value;
-        const wateringAmount = editPlantForm['edit-watering-amount'].value;
-        const wateringFrequency = editPlantForm['edit-watering-frequency'].value;
-        const nutrientBrand = editPlantForm['edit-nutrient-brand'].value;
-        const nutrients = Array.from(editPlantForm['nutrients'])
-            .filter(checkbox => checkbox.checked)
-            .map(checkbox => checkbox.value);
-
-        plants[editPlantIndex] = { name, date, time, wateringAmount, wateringFrequency, nutrientBrand, nutrients };
-        localStorage.setItem('plants', JSON.stringify(plants));
-        editPlantForm.reset();
-        alert('Plant updated successfully!');
+    editPlantForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const plant = plants[currentPlantIndex];
+        plant.name = event.target.editPlantName.value;
+        plant.plantingDate = event.target.editPlantingDate.value;
+        plant.growTime = event.target.editGrowTime.value;
+        plant.wateringAmount = event.target.wateringAmount.value;
+        plant.wateringFrequency = event.target.wateringFrequency.value;
+        plant.nutrientBrand = event.target.nutrientBrand.value;
+        plant.nutrients = Array.from(event.target.nutrient)
+            .filter(input => input.checked)
+            .map(input => input.value);
         displayPlants();
-        showSection('my-plants');
+        alert("Plant updated successfully!");
     });
 
     function displayPlants() {
-        plantsList.innerHTML = '';
+        plantsList.innerHTML = "";
         plants.forEach((plant, index) => {
-            const plantDiv = document.createElement('div');
-            plantDiv.className = 'plant';
+            const plantDiv = document.createElement("div");
+            plantDiv.classList.add("plant");
             plantDiv.innerHTML = `
                 <h3>${plant.name}</h3>
-                <p>Planted on: ${plant.date}</p>
-                <p>Grow Time: ${plant.time} weeks</p>
-                <p>Watering Amount: ${plant.wateringAmount || 'N/A'} oz</p>
-                <p>Watering Frequency: ${plant.wateringFrequency || 'N/A'} days</p>
-                <p>Nutrient Brand: ${plant.nutrientBrand || 'N/A'}</p>
-                <p>Nutrients: ${plant.nutrients ? plant.nutrients.join(', ') : 'N/A'}</p>
-                <button onclick="editPlant(${index})">Edit</button>
-                <button onclick="deletePlant(${index})">Delete</button>
+                <p>Planted on: ${plant.plantingDate}</p>
+                <p>Grow Time: ${plant.growTime} weeks</p>
+                <p>Watering Amount: ${plant.wateringAmount} oz</p>
+                <p>Watering Frequency: ${plant.wateringFrequency} days</p>
+                <p>Nutrient Brand: ${plant.nutrientBrand}</p>
+                <p>Nutrients: ${plant.nutrients.join(", ")}</p>
+                <button class="edit-plant" data-index="${index}">Edit</button>
+                <button class="delete-plant" data-index="${index}">Delete</button>
             `;
             plantsList.appendChild(plantDiv);
         });
-    }
 
-    function editPlant(index) {
-        const plant = plants[index];
-        editPlantIndex = index;
-        editPlantForm['edit-plant-name'].value = plant.name;
-        editPlantForm['edit-plant-date'].value = plant.date;
-        editPlantForm['edit-plant-time'].value = plant.time;
-        editPlantForm['edit-watering-amount'].value = plant.wateringAmount || '';
-        editPlantForm['edit-watering-frequency'].value = plant.wateringFrequency || '';
-        editPlantForm['edit-nutrient-brand'].value = plant.nutrientBrand || '';
-        Array.from(editPlantForm['nutrients']).forEach(checkbox => {
-            checkbox.checked = plant.nutrients ? plant.nutrients.includes(checkbox.value) : false;
+        document.querySelectorAll(".edit-plant").forEach(button => {
+            button.addEventListener("click", function() {
+                currentPlantIndex = this.getAttribute("data-index");
+                const plant = plants[currentPlantIndex];
+                editPlantForm.editPlantName.value = plant.name;
+                editPlantForm.editPlantingDate.value = plant.plantingDate;
+                editPlantForm.editGrowTime.value = plant.growTime;
+                editPlantForm.wateringAmount.value = plant.wateringAmount;
+                editPlantForm.wateringFrequency.value = plant.wateringFrequency;
+                editPlantForm.nutrientBrand.value = plant.nutrientBrand;
+                Array.from(editPlantForm.nutrient).forEach(input => {
+                    input.checked = plant.nutrients.includes(input.value);
+                });
+                switchSection("edit-plant");
+            });
         });
-        showSection('edit-plant');
+
+        document.querySelectorAll(".delete-plant").forEach(button => {
+            button.addEventListener("click", function() {
+                const index = this.getAttribute("data-index");
+                plants.splice(index, 1);
+                displayPlants();
+            });
+        });
     }
 
-    function deletePlant(index) {
-        plants.splice(index, 1);
-        localStorage.setItem('plants', JSON.stringify(plants));
+    function switchSection(sectionId) {
+        newPlantSection.classList.add("hidden");
+        myPlantsSection.classList.add("hidden");
+        editPlantSection.classList.add("hidden");
+        document.getElementById(sectionId).classList.remove("hidden");
+    }
+
+    document.getElementById("nav-new-plant").addEventListener("click", function() {
+        switchSection("new-plant");
+    });
+
+    document.getElementById("nav-my-plants").addEventListener("click", function() {
+        switchSection("my-plants");
         displayPlants();
-    }
+    });
 
-    function showSection(sectionId) {
-        const sections = document.querySelectorAll('main > section');
-        sections.forEach(section => {
-            section.style.display = section.id === sectionId ? 'block' : 'none';
-        });
-    }
+    document.getElementById("nav-schedule").addEventListener("click", function() {
+        switchSection("schedule");
+    });
 
-    function importPlants() {
-        // Add import plants functionality here
-    }
+    document.getElementById("nav-settings").addEventListener("click", function() {
+        switchSection("settings");
+    });
 
-    function savePlants() {
-        // Add save plants to file functionality here
-    }
-
-    displayPlants();
-    showSection('new-plant');
+    switchSection("new-plant");
 });
