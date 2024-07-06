@@ -7,56 +7,22 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Cannabis Plant Manager</h1>
-    </header>
-
-    <main>
-        <!-- New Plant Section -->
-        <div id="new-plant" class="content-section active">
-            <h2>Add New Plant</h2>
-            <form id="plant-form">
-                <label for="plant-name">Plant Name:</label>
-                <input type="text" id="plant-name" required>
-
-                <label for="plant-date">Planting Date:</label>
-                <input type="date" id="plant-date" required>
-
-                <label for="plant-grow-time">Grow Time (weeks):</label>
-                <input type="number" id="plant-grow-time" required>
-
-                <button type="submit">Add Plant</button>
-            </form>
-        </div>
-
-        <!-- My Plants Section -->
-        <div id="my-plants" class="content-section">
-            <h2>My Plants</h2>
-            <button id="import-plants-button">Import Plants</button>
-            <button id="save-plants-button">Save Plants to File</button>
-            <div id="plants"></div>
-        </div>
-
-        <!-- Schedule Section -->
-        <div id="schedule" class="content-section">
-            <h2>Schedule</h2>
-            <p>Manage your plant schedule here.</p>
-        </div>
-
-        <!-- Settings Section -->
-        <div id="settings" class="content-section">
-            <h2>Settings</h2>
-            <p>Manage your settings here.</p>
-        </div>
-    </main>
-
-    <footer>
-        <button id="new-plant-button">New Plant</button>
-        <button id="my-plants-button">My Plants</button>
-        <button id="schedule-button">Schedule</button>
-        <button id="settings-button">Settings</button>
-    </footer>
-
+    <div class="container">
+        <header>
+            <h1>Cannabis Plant Manager</h1>
+        </header>
+        <main id="content">
+            <!-- Content will be injected here by JavaScript -->
+        </main>
+        <footer>
+            <div class="navbar">
+                <button onclick="navigateTo('new-plant')">New Plant</button>
+                <button onclick="navigateTo('my-plants')">My Plants</button>
+                <button onclick="navigateTo('schedule')">Schedule</button>
+                <button onclick="navigateTo('settings')">Settings</button>
+            </div>
+        </footer>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
