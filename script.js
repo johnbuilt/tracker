@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     settingsButton.addEventListener('click', loadSettingsScreen);
 
     function loadHomeScreen() {
-        clearMainContainer();
         mainContainer.innerHTML = `
             <h2>Today's Feedings:</h2>
             <div id="feedings"></div>
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadAddPlantScreen() {
-        clearMainContainer();
         mainContainer.innerHTML = `
             <h2>Add Plant</h2>
             <form id="add-plant-form">
@@ -39,15 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 <label for="date-planted">Date Planted:</label>
                 <input type="date" id="date-planted" name="date-planted">
                 <button type="submit">Add Plant</button>
-                <div id="confirmation-message" style="display: none;">Plant added successfully!</div>
             </form>
+            <p id="confirmation-message" style="display: none;">Plant added successfully!</p>
         `;
 
         document.getElementById('add-plant-form').addEventListener('submit', addPlant);
     }
 
     function loadMyPlantsScreen() {
-        clearMainContainer();
         mainContainer.innerHTML = `
             <h2>My Plants</h2>
             <div class="button-container">
@@ -63,12 +60,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadScheduleScreen() {
-        clearMainContainer();
-        mainContainer.innerHTML = '<h2>Schedule</h2>';
+        mainContainer.innerHTML = '<h2>Schedule</h2><div id="calendar"></div>';
+        initializeCalendar();
     }
 
     function loadSettingsScreen() {
-        clearMainContainer();
         mainContainer.innerHTML = '<h2>Settings</h2>';
     }
 
@@ -91,17 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
         let plants = JSON.parse(localStorage.getItem('plants')) || [];
         plants.push(plant);
         localStorage.setItem('plants', JSON.stringify(plants));
-        
-        // Show confirmation message
+
         const confirmationMessage = document.getElementById('confirmation-message');
         confirmationMessage.style.display = 'block';
-        
-        // Hide confirmation message after 3 seconds
         setTimeout(() => {
             confirmationMessage.style.display = 'none';
         }, 3000);
 
-        // Reset the form
         document.getElementById('add-plant-form').reset();
     }
 
@@ -153,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let plants = JSON.parse(localStorage.getItem('plants')) || [];
         const plant = plants[index];
 
-        clearMainContainer();
         mainContainer.innerHTML = `
             <h2>Edit Plant</h2>
             <form id="edit-plant-form">
@@ -211,7 +202,35 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('Plants data imported.');
     }
 
-    function clearMainContainer() {
-        mainContainer.innerHTML = '';
+    function initializeCalendar() {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: getCalendarEvents(),
+        });
+        calendar.render();
+    }
+
+    function getCalendarEvents() {
+        let plants = JSON.parse(localStorage.getItem('plants')) || [];
+        let events = [];
+
+        plants.forEach(plant => {
+            if (plant.wateringFrequency) {
+                let datePlanted = new Date(plant.datePlanted);
+                let frequency = parseInt(plant.wateringFrequency);
+
+                for (let i = 0; i < plant.growTime * 7; i += frequency) {
+                    let wateringDate = new Date(datePlanted);
+                    wateringDate.setDate(wateringDate.getDate() + i);
+                    events.push({
+                        title: `Water ${plant.name}`,
+                        start: wateringDate.toISOString().split('T')[0],
+                    });
+                }
+            }
+        });
+
+        return events;
     }
 });
