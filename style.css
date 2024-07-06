@@ -1,75 +1,61 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Sophia Pro Soft', sans-serif;
+    background-color: #FAF7EF;
     margin: 0;
     padding: 0;
 }
 
 header {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #68A357;
+    color: #FFFFFF;
     text-align: center;
     padding: 1em 0;
 }
 
-main {
+.content {
     padding: 1em;
 }
 
-nav {
+.page {
+    display: none;
+}
+
+#home, #my-plants, #add-plant {
+    display: block;
+}
+
+.navbar {
+    background-color: #68A357;
     position: fixed;
     bottom: 0;
     width: 100%;
-    background-color: #333;
     display: flex;
     justify-content: space-around;
     padding: 0.5em 0;
 }
 
-nav button {
-    background-color: #4CAF50;
+.nav-btn {
+    background: none;
     border: none;
-    color: white;
-    padding: 0.5em 1em;
-    cursor: pointer;
-}
-
-nav button:hover {
-    background-color: #555;
-}
-
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-form label {
-    margin-top: 0.5em;
-}
-
-form input, form select, form button {
-    margin-top: 0.5em;
-    padding: 0.5em;
+    color: #FFFFFF;
     font-size: 1em;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 0.5em;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #45a049;
-}
-
-.hidden {
-    display: none;
-}
-
-#plantsList .plant {
-    border: 1px solid #ddd;
+.plant-feeding, .plant {
+    background-color: #C1D5A4;
     padding: 1em;
-    margin-top: 1em;
+    margin: 1em 0;
+    border-radius: 8px;
+}
+
+#add-plant-form label {
+    display: block;
+    margin: 0.5em 0 0.2em;
+}
+
+#add-plant-form input, #add-plant-form button {
+    width: 100%;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
 }
