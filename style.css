@@ -27,6 +27,8 @@ header {
 h1 {
     margin: 0; /* Remove default margin */
     font-size: 1.5em; /* Adjust font size as needed */
+    width: 100%; /* Ensure it takes full width */
+    text-align: center; /* Center the text */
 }
 
 nav {
