@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     settingsButton.addEventListener('click', loadSettingsScreen);
 
     function loadHomeScreen() {
+        clearMainContainer();
         mainContainer.innerHTML = `
             <h2>Today's Feedings:</h2>
             <div id="feedings"></div>
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadAddPlantScreen() {
+        clearMainContainer();
         mainContainer.innerHTML = `
             <h2>Add Plant</h2>
             <form id="add-plant-form">
@@ -37,14 +39,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <label for="date-planted">Date Planted:</label>
                 <input type="date" id="date-planted" name="date-planted">
                 <button type="submit">Add Plant</button>
+                <div id="confirmation-message" style="display: none;">Plant added successfully!</div>
             </form>
-            <div id="confirmation-message" style="display:none;">Plant added successfully!</div>
         `;
 
         document.getElementById('add-plant-form').addEventListener('submit', addPlant);
     }
 
     function loadMyPlantsScreen() {
+        clearMainContainer();
         mainContainer.innerHTML = `
             <h2>My Plants</h2>
             <div class="button-container">
@@ -60,10 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function loadScheduleScreen() {
+        clearMainContainer();
         mainContainer.innerHTML = '<h2>Schedule</h2>';
     }
 
     function loadSettingsScreen() {
+        clearMainContainer();
         mainContainer.innerHTML = '<h2>Settings</h2>';
     }
 
@@ -72,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const plantName = document.getElementById('plant-name').value;
         const growTime = document.getElementById('grow-time').value;
         const datePlanted = document.getElementById('date-planted').value;
-
+        
         const plant = {
             name: plantName,
             growTime: growTime,
@@ -88,18 +93,16 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('plants', JSON.stringify(plants));
         
         // Show confirmation message
-        showConfirmation();
-
-        // Reset form
-        document.getElementById('add-plant-form').reset();
-    }
-
-    function showConfirmation() {
         const confirmationMessage = document.getElementById('confirmation-message');
         confirmationMessage.style.display = 'block';
+        
+        // Hide confirmation message after 3 seconds
         setTimeout(() => {
             confirmationMessage.style.display = 'none';
         }, 3000);
+
+        // Reset the form
+        document.getElementById('add-plant-form').reset();
     }
 
     function displayPlants() {
@@ -150,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let plants = JSON.parse(localStorage.getItem('plants')) || [];
         const plant = plants[index];
 
+        clearMainContainer();
         mainContainer.innerHTML = `
             <h2>Edit Plant</h2>
             <form id="edit-plant-form">
@@ -205,5 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function importPlants() {
         // Import plants data from a file or cloud storage
         alert('Plants data imported.');
+    }
+
+    function clearMainContainer() {
+        mainContainer.innerHTML = '';
     }
 });
