@@ -4,17 +4,17 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100vh;
 }
 
 header {
     background-color: #4CAF50;
     color: white;
-    padding: 15px;
     text-align: center;
+    padding: 10px 0;
 }
 
-#content {
+main {
     flex: 1;
     padding: 20px;
 }
@@ -23,39 +23,7 @@ header {
     display: none;
 }
 
-.page.active {
-    display: block;
-}
-
-form {
-    max-width: 400px;
-    margin: auto;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-}
-
-input, select, button {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-nav {
+footer {
     background-color: #333;
     color: white;
     text-align: center;
@@ -65,33 +33,27 @@ nav {
     width: 100%;
 }
 
-nav button {
-    background: none;
-    border: none;
+footer nav button {
+    background-color: #333;
     color: white;
-    padding: 14px 20px;
+    border: none;
+    padding: 10px 20px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-nav button:hover {
-    background-color: #575757;
+footer nav button:hover {
+    background-color: #555;
 }
 
-#plants-list .plant {
-    border: 1px solid #ddd;
-    padding: 10px;
+footer nav button:focus {
+    outline: none;
+}
+
+#edit-plant-form label,
+#edit-plant-form input,
+#edit-plant-form select,
+#edit-plant-form button {
+    display: block;
     margin-bottom: 10px;
-}
-
-#plants-list .plant button {
-    background-color: #f44336;
-    border: none;
-    color: white;
-    padding: 10px;
-    cursor: pointer;
-}
-
-#plants-list .plant button.edit {
-    background-color: #4CAF50;
-    margin-right: 10px;
 }
