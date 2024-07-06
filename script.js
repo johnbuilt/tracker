@@ -1,53 +1,49 @@
 document.addEventListener("DOMContentLoaded", () => {
-    navigate('new-plant');
+    navigate("new-plant");
     loadPlants();
-
-    document.getElementById("new-plant-form").addEventListener("submit", (event) => {
-        event.preventDefault();
-        addPlant();
-    });
-
-    document.getElementById("edit-plant-form").addEventListener("submit", (event) => {
-        event.preventDefault();
-        savePlant();
-    });
 });
 
-function navigate(page) {
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(page).classList.add("active");
+function navigate(pageId) {
+    document.querySelectorAll(".page").forEach(page => {
+        page.style.display = "none";
+    });
+    document.getElementById(pageId).style.display = "block";
 }
 
 function addPlant() {
-    const plants = getPlantsFromStorage();
-    const plant = {
-        id: new Date().getTime(),
-        name: document.getElementById("plant-name").value,
-        plantingDate: document.getElementById("planting-date").value,
-        growTime: document.getElementById("grow-time").value
-    };
-    plants.push(plant);
-    localStorage.setItem("plants", JSON.stringify(plants));
-    alert("Plant added successfully!");
-    document.getElementById("new-plant-form").reset();
-    loadPlants();
+    const name = document.getElementById("plant-name").value;
+    const plantingDate = document.getElementById("planting-date").value;
+    const growTime = document.getElementById("grow-time").value;
+
+    if (name && plantingDate && growTime) {
+        const plants = getPlantsFromStorage();
+        const newPlant = {
+            id: plants.length ? plants[plants.length - 1].id + 1 : 1,
+            name,
+            plantingDate,
+            growTime
+        };
+        plants.push(newPlant);
+        localStorage.setItem("plants", JSON.stringify(plants));
+        alert("Plant added successfully!");
+        document.getElementById("new-plant-form").reset();
+    } else {
+        alert("Please fill out all fields.");
+    }
 }
 
 function loadPlants() {
     const plants = getPlantsFromStorage();
     const plantsList = document.getElementById("plants-list");
     plantsList.innerHTML = "";
+
     plants.forEach(plant => {
         const plantDiv = document.createElement("div");
         plantDiv.classList.add("plant");
         plantDiv.innerHTML = `
             <p>${plant.name} (Planted on: ${plant.plantingDate})</p>
             <p>Grow Time: ${plant.growTime} weeks</p>
-            <p>Watering Amount: ${plant.wateringAmount || "N/A"} oz</p>
-            <p>Watering Frequency: ${plant.wateringFrequency || "N/A"} days</p>
-            <p>Nutrient Brand: ${plant.nutrientBrand || "N/A"}</p>
-            <p>Nutrients: ${plant.nutrients ? plant.nutrients.join(", ") : "N/A"}</p>
-            <button class="edit" onclick="editPlant(${plant.id})">Edit</button>
+            <button onclick="editPlant(${plant.id})">Edit</button>
             <button onclick="deletePlant(${plant.id})">Delete</button>
         `;
         plantsList.appendChild(plantDiv);
@@ -57,6 +53,7 @@ function loadPlants() {
 function editPlant(id) {
     const plants = getPlantsFromStorage();
     const plant = plants.find(p => p.id === id);
+
     if (plant) {
         document.getElementById("edit-plant-name").value = plant.name;
         document.getElementById("edit-planting-date").value = plant.plantingDate;
@@ -76,6 +73,7 @@ function savePlant() {
     const plants = getPlantsFromStorage();
     const id = parseInt(document.getElementById("edit-plant-form").dataset.id);
     const plant = plants.find(p => p.id === id);
+
     if (plant) {
         plant.name = document.getElementById("edit-plant-name").value;
         plant.plantingDate = document.getElementById("edit-planting-date").value;
@@ -100,4 +98,30 @@ function deletePlant(id) {
 
 function getPlantsFromStorage() {
     return JSON.parse(localStorage.getItem("plants")) || [];
+}
+
+function importPlants() {
+    // Implement import plants functionality here
+}
+
+function savePlantsToFile() {
+    // Implement save plants to file functionality here
+}
+
+function updateNutrients() {
+    const brand = document.getElementById("edit-nutrient-brand").value;
+    const nutrientsDiv = document.getElementById("edit-nutrients");
+    nutrientsDiv.innerHTML = "";
+
+    if (brand === "Fox Farms") {
+        ["Big Bloom", "Grow Big", "Tiger Bloom"].forEach(nutrient => {
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.value = nutrient;
+            nutrientsDiv.appendChild(checkbox);
+            nutrientsDiv.appendChild(document.createTextNode(nutrient));
+            nutrientsDiv.appendChild(document.createElement("br"));
+        });
+    }
+    // Add more brands and nutrients as needed
 }
