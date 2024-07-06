@@ -10,89 +10,58 @@
     <header>
         <h1>Cannabis Plant Manager</h1>
     </header>
-
     <main>
         <section id="new-plant">
             <h2>Add New Plant</h2>
-            <form id="plant-form">
-                <label for="plant-name">Plant Name:</label>
-                <input type="text" id="plant-name" name="plant-name" required>
-
-                <label for="plant-date">Planting Date:</label>
-                <input type="date" id="plant-date" name="plant-date" required>
-
-                <label for="plant-time">Grow Time (weeks):</label>
-                <input type="number" id="plant-time" name="plant-time" required>
-
+            <form id="addPlantForm">
+                <label for="plantName">Plant Name:</label>
+                <input type="text" id="plantName" name="plantName">
+                <label for="plantingDate">Planting Date:</label>
+                <input type="date" id="plantingDate" name="plantingDate">
+                <label for="growTime">Grow Time (weeks):</label>
+                <input type="number" id="growTime" name="growTime">
                 <button type="submit">Add Plant</button>
             </form>
         </section>
-
-        <section id="my-plants" style="display: none;">
+        <section id="my-plants">
             <h2>My Plants</h2>
-            <button onclick="importPlants()">Import Plants</button>
-            <button onclick="savePlants()">Save Plants to File</button>
-            <div id="plants-list"></div>
+            <div id="plantsList"></div>
         </section>
-
-        <section id="edit-plant" style="display: none;">
+        <section id="edit-plant" class="hidden">
             <h2>Edit Plant</h2>
-            <form id="edit-plant-form">
-                <label for="edit-plant-name">Plant Name:</label>
-                <input type="text" id="edit-plant-name" name="edit-plant-name" required>
-
-                <label for="edit-plant-date">Planting Date:</label>
-                <input type="date" id="edit-plant-date" name="edit-plant-date" required>
-
-                <label for="edit-plant-time">Grow Time (weeks):</label>
-                <input type="number" id="edit-plant-time" name="edit-plant-time" required>
-
-                <label for="edit-watering-amount">Watering Amount (oz):</label>
-                <input type="number" id="edit-watering-amount" name="edit-watering-amount" required>
-
-                <label for="edit-watering-frequency">Watering Frequency (days):</label>
-                <input type="number" id="edit-watering-frequency" name="edit-watering-frequency" required>
-
-                <label for="edit-nutrient-brand">Nutrient Brand:</label>
-                <select id="edit-nutrient-brand" name="edit-nutrient-brand" required>
+            <form id="editPlantForm">
+                <label for="editPlantName">Plant Name:</label>
+                <input type="text" id="editPlantName" name="editPlantName">
+                <label for="editPlantingDate">Planting Date:</label>
+                <input type="date" id="editPlantingDate" name="editPlantingDate">
+                <label for="editGrowTime">Grow Time (weeks):</label>
+                <input type="number" id="editGrowTime" name="editGrowTime">
+                <label for="wateringAmount">Watering Amount (oz):</label>
+                <input type="number" id="wateringAmount" name="wateringAmount">
+                <label for="wateringFrequency">Watering Frequency (days):</label>
+                <input type="number" id="wateringFrequency" name="wateringFrequency">
+                <label for="nutrientBrand">Nutrient Brand:</label>
+                <select id="nutrientBrand" name="nutrientBrand">
                     <option value="Fox Farms">Fox Farms</option>
-                    <!-- Add more brands as needed -->
+                    <option value="General Hydroponics">General Hydroponics</option>
+                    <option value="Advanced Nutrients">Advanced Nutrients</option>
                 </select>
-
-                <label for="edit-nutrients">Nutrients:</label>
-                <div id="edit-nutrients">
-                    <input type="checkbox" id="big-bloom" name="nutrients" value="Big Bloom">
-                    <label for="big-bloom">Big Bloom</label><br>
-                    <input type="checkbox" id="grow-big" name="nutrients" value="Grow Big">
-                    <label for="grow-big">Grow Big</label><br>
-                    <input type="checkbox" id="tiger-bloom" name="nutrients" value="Tiger Bloom">
-                    <label for="tiger-bloom">Tiger Bloom</label>
+                <div id="nutrients">
+                    <p>Nutrients:</p>
+                    <label><input type="checkbox" name="nutrient" value="Big Bloom"> Big Bloom</label>
+                    <label><input type="checkbox" name="nutrient" value="Grow Big"> Grow Big</label>
+                    <label><input type="checkbox" name="nutrient" value="Tiger Bloom"> Tiger Bloom</label>
                 </div>
-
                 <button type="submit">Save</button>
             </form>
         </section>
-
-        <section id="schedule" style="display: none;">
-            <h2>Schedule</h2>
-            <!-- Schedule content -->
-        </section>
-
-        <section id="settings" style="display: none;">
-            <h2>Settings</h2>
-            <!-- Settings content -->
-        </section>
     </main>
-
-    <footer>
-        <nav>
-            <button onclick="showSection('new-plant')">New Plant</button>
-            <button onclick="showSection('my-plants')">My Plants</button>
-            <button onclick="showSection('schedule')">Schedule</button>
-            <button onclick="showSection('settings')">Settings</button>
-        </nav>
-    </footer>
-
+    <nav>
+        <button id="nav-new-plant">New Plant</button>
+        <button id="nav-my-plants">My Plants</button>
+        <button id="nav-schedule">Schedule</button>
+        <button id="nav-settings">Settings</button>
+    </nav>
     <script src="script.js"></script>
 </body>
 </html>
