@@ -1,61 +1,84 @@
+/* General styles */
 body {
     font-family: 'Sophia Pro Soft', sans-serif;
-    background-color: #FAF7EF;
     margin: 0;
     padding: 0;
+    background-color: #F8F8F2;
 }
 
+/* Header styles */
 header {
-    background-color: #68A357;
-    color: #FFFFFF;
+    background-color: #50C878;
+    color: white;
     text-align: center;
-    padding: 1em 0;
+    padding: 10px 0;
+    font-size: 1.5em;
 }
 
-.content {
-    padding: 1em;
-}
-
-.page {
-    display: none;
-}
-
-#home, #my-plants, #add-plant {
-    display: block;
-}
-
-.navbar {
-    background-color: #68A357;
+/* Navigation bar styles */
+nav {
+    background-color: #50C878;
     position: fixed;
     bottom: 0;
     width: 100%;
     display: flex;
     justify-content: space-around;
-    padding: 0.5em 0;
+    padding: 10px 0;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+    border-radius: 20px 20px 0 0;
 }
 
-.nav-btn {
-    background: none;
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+nav a.active {
+    text-decoration: underline;
+}
+
+/* Container styles */
+.container {
+    padding: 20px;
+}
+
+/* Form and button styles */
+form input, form select {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #50C878;
+    color: white;
     border: none;
-    color: #FFFFFF;
+    padding: 10px;
+    border-radius: 5px;
     font-size: 1em;
     cursor: pointer;
 }
 
-.plant-feeding, .plant {
-    background-color: #C1D5A4;
-    padding: 1em;
-    margin: 1em 0;
-    border-radius: 8px;
+button:hover {
+    background-color: #45B56B;
 }
 
-#add-plant-form label {
+/* Card styles */
+.card {
+    background-color: #E6E6E6;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Align center for buttons */
+button.center {
     display: block;
-    margin: 0.5em 0 0.2em;
-}
-
-#add-plant-form input, #add-plant-form button {
-    width: 100%;
-    padding: 0.5em;
-    margin-bottom: 0.5em;
+    margin: 0 auto;
 }
