@@ -1,44 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cannabis Plant Manager</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <h1>Cannabis Plant Manager</h1>
-    <nav>
-        <button onclick="showSection('new-plant')">New Plant</button>
-        <button onclick="showSection('my-plants')">My Plants</button>
-        <button onclick="showSection('schedule')">Schedule</button>
-        <button onclick="showSection('settings')">Settings</button>
-    </nav>
-    <div id="new-plant" class="content-section">
-        <form id="plant-form">
-            <label for="plant-name">Plant Name:</label>
-            <input type="text" id="plant-name" required>
-            <label for="plant-date">Planting Date:</label>
-            <input type="date" id="plant-date" required>
-            <label for="plant-grow-time">Grow Time (weeks):</label>
-            <input type="number" id="plant-grow-time" required>
-            <button type="submit">Add Plant</button>
-        </form>
-    </div>
-    <div id="my-plants" class="content-section" style="display: none;">
-        <input type="file" id="import-plants-file" accept=".json" style="display: none;">
-        <button id="import-plants-button">Import Plants</button>
-        <button id="save-plants-button">Save Plants to File</button>
-        <div id="plants"></div>
-    </div>
-    <div id="schedule" class="content-section" style="display: none;">
-        <h2>Schedule</h2>
-        <div id="schedule-content">Schedule content goes here...</div>
-    </div>
-    <div id="settings" class="content-section" style="display: none;">
-        <h2>Settings</h2>
-        <div id="settings-content">Settings content goes here...</div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+name: Deploy static content to Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the site
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./build
