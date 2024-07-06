@@ -74,6 +74,11 @@ document.addEventListener("DOMContentLoaded", function () {
         navigateTo(location.hash);
     });
 
+    // If there's no hash, default to #new-plant
+    if (!location.hash) {
+        location.hash = "#new-plant";
+    }
+
     navigateTo(location.hash);
     displayPlants();
 });
