@@ -30,8 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadMyPlantsPage() {
         mainContainer.innerHTML = `
             <h2>My Plants</h2>
-            <button class="center">Save</button>
-            <button class="center">Import</button>
+            <div class="button-container">
+                <button class="center">Save</button>
+                <button class="center">Import</button>
+            </div>
             <div class="card">
                 <p><strong>Name:</strong> Tomato</p>
                 <p><strong>Grow Time:</strong> 10 weeks</p>
