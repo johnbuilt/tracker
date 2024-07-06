@@ -80,6 +80,11 @@ button:hover {
 
 /* Align center for buttons */
 button.center {
-    display: block;
-    margin: 0 auto;
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.button-container {
+    text-align: center;
+    margin-bottom: 20px;
 }
