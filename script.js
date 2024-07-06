@@ -43,6 +43,7 @@ function editPlant(index) {
     document.getElementById("edit-watering-amount").value = plant.wateringAmount || '';
     document.getElementById("edit-watering-frequency").value = plant.wateringFrequency || '';
     document.getElementById("edit-nutrient-brand").value = plant.nutrientBrand || '';
+    updateNutrients();
     showSection('edit-plant');
 }
 
@@ -76,6 +77,7 @@ function showSection(sectionId) {
         section.classList.add("hidden");
     });
     document.getElementById(sectionId).classList.remove("hidden");
+    document.getElementById(sectionId).classList.add("active");
 }
 
 function updateNutrients() {
@@ -88,8 +90,12 @@ function updateNutrients() {
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             checkbox.value = nutrient;
+            checkbox.id = nutrient;
+            const label = document.createElement("label");
+            label.htmlFor = nutrient;
+            label.appendChild(document.createTextNode(nutrient));
             nutrientsDiv.appendChild(checkbox);
-            nutrientsDiv.appendChild(document.createTextNode(nutrient));
+            nutrientsDiv.appendChild(label);
             nutrientsDiv.appendChild(document.createElement("br"));
         });
     }
