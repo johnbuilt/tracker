@@ -5,71 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="/path/to/manifest.json">
-    <link rel="apple-touch-icon" href="/path/to/icon-192.png">
-    <title>OptiGrow</title>
     <link rel="stylesheet" href="style.css">
+    <title>OptiGrow</title>
 </head>
 <body>
     <header>
-        <h1>OptiGrow</h1>
+        OptiGrow
     </header>
 
-    <div class="content" id="content">
-        <!-- Home Page Content -->
-        <div id="home" class="page">
-            <h2>Today's Feedings:</h2>
-            <div class="feeding-schedule">
-                <!-- Sample plant feeding schedule -->
-                <div class="plant-feeding">
-                    <p>Plant Name: Tomato</p>
-                    <p>Water Amount: 20 oz</p>
-                    <p>Nutrients: Big Bloom, Grow Big</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- My Plants Page Content -->
-        <div id="my-plants" class="page">
-            <button id="save-plants">Save</button>
-            <button id="import-plants">Import</button>
-            <div class="plant-list">
-                <!-- Sample plant -->
-                <div class="plant">
-                    <p>Name: Tomato</p>
-                    <p>Grow Time: 10 weeks</p>
-                    <p>Date Planted: 2023-06-01</p>
-                    <p>Watering: 20 oz every 2 days</p>
-                    <p>Nutrients: Big Bloom, Grow Big</p>
-                    <button class="edit-plant">Edit</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Add Plant Page Content -->
-        <div id="add-plant" class="page">
-            <h2>Add Plant</h2>
-            <form id="add-plant-form">
-                <label for="plant-name">Name:</label>
-                <input type="text" id="plant-name" name="plant-name" required>
-                
-                <label for="grow-time">Grow Time:</label>
-                <input type="text" id="grow-time" name="grow-time" required>
-                
-                <label for="date-planted">Date Planted:</label>
-                <input type="date" id="date-planted" name="date-planted" required>
-                
-                <button type="submit">Add Plant</button>
-            </form>
-        </div>
+    <div class="container" id="main-container">
+        <!-- Content will be injected here by script.js -->
     </div>
 
-    <nav class="navbar">
-        <button id="nav-add-plant" class="nav-btn">Add Plants</button>
-        <button id="nav-my-plants" class="nav-btn">My Plants</button>
-        <button id="nav-home" class="nav-btn">Home</button>
-        <button id="nav-schedule" class="nav-btn">Schedule</button>
-        <button id="nav-settings" class="nav-btn">Settings</button>
+    <nav>
+        <a href="#add-plant" id="nav-add-plant">Add Plants</a>
+        <a href="#my-plants" id="nav-my-plants">My Plants</a>
+        <a href="#home" id="nav-home">Home</a>
+        <a href="#schedule" id="nav-schedule">Schedule</a>
+        <a href="#settings" id="nav-settings">Settings</a>
     </nav>
 
     <script src="script.js"></script>
