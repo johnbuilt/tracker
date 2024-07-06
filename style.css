@@ -14,7 +14,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 60px; /* Adjust the height as needed */
+    height: 80px; /* Adjust the height to make the header bigger */
     width: 100%;
     position: fixed;
     top: 0;
@@ -22,7 +22,7 @@ header {
 }
 
 header h1 {
-    font-size: 1.8em; /* Adjust font size as needed */
+    font-size: 2em; /* Adjust font size as needed */
     margin: 0; /* Remove default margin */
 }
 
@@ -55,7 +55,7 @@ nav a img {
 
 .container {
     padding: 2em;
-    padding-top: 6em; /* Ensure enough space for the fixed larger header */
+    padding-top: 8em; /* Ensure enough space for the fixed larger header */
     padding-bottom: 7em; /* Ensure enough space for the larger navigation bar */
 }
 
